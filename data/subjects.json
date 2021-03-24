@@ -1,0 +1,33 @@
+{
+    "list": [{
+            "name": "Stories",
+            "tagline": "Learning experiences",
+            "icon": "stories"
+        },
+        {
+            "name": "Rhymes",
+            "tagline": "Traditional poems",
+            "icon": "rhymes"
+        },
+        {
+            "name": "Reading",
+            "tagline": "Word recognition",
+            "icon": "reading"
+        },
+        {
+            "name": "Language",
+            "tagline": "Enhance vocabulary",
+            "icon": "language"
+        },
+        {
+            "name": "Numbers",
+            "tagline": "Learn numerical skills",
+            "icon": "numbers"
+        },
+        {
+            "name": "Themes",
+            "tagline": "Explore various genres",
+            "icon": "themes"
+        }
+    ]
+}
