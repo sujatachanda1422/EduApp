@@ -25,15 +25,15 @@ function HomeComp() {
         },
       }}>
       <Stack.Screen
-        name="Register"
-        component={Register}
+        name="Login"
+        component={Login}
         options={{
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="Login"
-        component={Login}
+        name="Register"
+        component={Register}
         options={{
           headerShown: false,
         }}
@@ -43,21 +43,21 @@ function HomeComp() {
         component={Dashboard}
         options={{
           title: 'Kindergarten',
-          headerLeft: null
+          headerLeft: null,
         }}
       />
       <Stack.Screen
         name="Lesson"
         component={Lesson}
         options={{
-          title: 'Numbers'
+          title: 'Numbers',
         }}
       />
       <Stack.Screen
         name="LessonDetails"
         component={LessonDetails}
         options={{
-          title: 'The Numbers Song'
+          title: 'The Numbers Song',
         }}
       />
     </Stack.Navigator>

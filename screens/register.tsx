@@ -1,20 +1,25 @@
 import React from 'react';
 import {StyleSheet, View, ImageBackground, ScrollView} from 'react-native';
 
-import {HelperText, TextInput, Button} from 'react-native-paper';
+import {HelperText, TextInput, Button, Text} from 'react-native-paper';
 
 const bkg = require('../images/register-bkg.png');
 
-export default function Login() {
+export default function Login({navigation}) {
   const [email, setEmail] = React.useState('');
 
   const onChangeEmail = (email) => setEmail(email);
 
   const hasErrors = () => {
+    return false;
     return email && !email.includes('@');
   };
 
-  const register = () => {};
+  const register = () => {
+    navigation.navigate('HomeComp', {
+      screen: 'Dashboard',
+    });
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -23,7 +28,7 @@ export default function Login() {
           <View>
             <TextInput
               style={styles.inputStyle}
-              theme={{colors: {text: '#fff', placeholder : '#fff'}}}
+              theme={{colors: {text: '#fff', placeholder: '#fff'}}}
               label="Fullname"
               // value={this.state.mobile}
               // onChangeText={(val) => this.updateInputVal(val, 'mobile')}
@@ -35,7 +40,7 @@ export default function Login() {
           <View>
             <TextInput
               label="Email"
-              theme={{colors: {text: '#fff', placeholder : '#fff'}}}
+              theme={{colors: {text: '#fff', placeholder: '#fff'}}}
               value={email}
               style={styles.inputStyle}
               onChangeText={onChangeEmail}
@@ -47,7 +52,7 @@ export default function Login() {
           <View>
             <TextInput
               style={styles.inputStyle}
-              theme={{colors: {text: '#fff', placeholder : '#fff'}}}
+              theme={{colors: {text: '#fff', placeholder: '#fff'}}}
               label="Mobile (Optional)"
               keyboardType="numeric"
               // value={this.state.mobile}
@@ -61,7 +66,7 @@ export default function Login() {
           <View>
             <TextInput
               style={styles.inputStyle}
-              theme={{colors: {text: '#fff', placeholder : '#fff'}}}
+              theme={{colors: {text: '#fff', placeholder: '#fff'}}}
               label="Password"
               secureTextEntry={true}
               // value={this.state.loginPin}
@@ -72,7 +77,7 @@ export default function Login() {
             </HelperText>
             <TextInput
               style={styles.inputStyle}
-              theme={{colors: {text: '#fff', placeholder : '#fff'}}}
+              theme={{colors: {text: '#fff', placeholder: '#fff'}}}
               label="Confirm Password"
               secureTextEntry={true}
               // value={this.state.loginPin}
@@ -85,10 +90,20 @@ export default function Login() {
           <Button
             color="#2dadb3"
             mode="contained"
-            style={{marginTop: 50}}
-            onPress={() => this.register()}>
+            style={{marginTop: 30}}
+            onPress={() => register()}>
             Register
           </Button>
+
+          <Text
+            style={styles.loginText}
+            onPress={() =>
+              navigation.navigate('HomeComp', {
+                screen: 'Login',
+              })
+            }>
+            Already have an account? Login now
+          </Text>
         </View>
       </ImageBackground>
     </ScrollView>
@@ -112,5 +127,11 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     justifyContent: 'center',
+  },
+  loginText: {
+    marginTop: 40,
+    color: '#0c50ea',
+    textAlign: 'center',
+    fontSize: 16,
   },
 });
