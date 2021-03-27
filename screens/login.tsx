@@ -67,7 +67,11 @@ export default class Login extends Component {
     }
   };
 
-  register = () => {};
+  register = () => {
+    this.props.navigation.navigate('HomeComp', {
+      screen: 'Register',
+    });
+  };
 
   userLogin = () => {
     this.props.navigation.navigate('HomeComp', {
@@ -105,6 +109,7 @@ export default class Login extends Component {
                 <TextInput
                   style={styles.inputStyle}
                   placeholder="Password"
+                  secureTextEntry={true}
                   // value={this.state.loginPin}
                   // onChangeText={(val) => this.updateInputVal(val, 'loginPin')}
                 />

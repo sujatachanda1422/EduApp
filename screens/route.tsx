@@ -2,6 +2,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Login from './login';
+import Register from './register';
 import Dashboard from './dashboard';
 import Lesson from './lesson';
 import LessonDetails from './lessonDetails';
@@ -23,6 +24,13 @@ function HomeComp() {
           backgroundColor: '#2dadb3',
         },
       }}>
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stack.Screen
         name="Login"
         component={Login}
