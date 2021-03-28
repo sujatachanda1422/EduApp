@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Login from './login';
 import Register from './register';
 import Dashboard from './dashboard';
+import Role from './role';
 import Lesson from './lesson';
 import LessonDetails from './lessonDetails';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -34,6 +35,13 @@ function HomeComp() {
       <Stack.Screen
         name="Register"
         component={Register}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Role"
+        component={Role}
         options={{
           headerShown: false,
         }}

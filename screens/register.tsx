@@ -1,12 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View, ImageBackground, ScrollView} from 'react-native';
 
 import {HelperText, TextInput, Button, Text} from 'react-native-paper';
 
 const bkg = require('../images/register-bkg.png');
 
-export default function Login({navigation}) {
-  const [email, setEmail] = React.useState('');
+export default function Register({navigation}) {
+  const [email, setEmail] = useState('');
 
   const onChangeEmail = (email) => setEmail(email);
 
@@ -17,7 +17,7 @@ export default function Login({navigation}) {
 
   const register = () => {
     navigation.navigate('HomeComp', {
-      screen: 'Dashboard',
+      screen: 'Role',
     });
   };
 
@@ -28,7 +28,6 @@ export default function Login({navigation}) {
           <View>
             <TextInput
               style={styles.inputStyle}
-              theme={{colors: {text: '#fff', placeholder: '#fff'}}}
               label="Fullname"
               // value={this.state.mobile}
               // onChangeText={(val) => this.updateInputVal(val, 'mobile')}
@@ -40,7 +39,6 @@ export default function Login({navigation}) {
           <View>
             <TextInput
               label="Email"
-              theme={{colors: {text: '#fff', placeholder: '#fff'}}}
               value={email}
               style={styles.inputStyle}
               onChangeText={onChangeEmail}
@@ -52,7 +50,6 @@ export default function Login({navigation}) {
           <View>
             <TextInput
               style={styles.inputStyle}
-              theme={{colors: {text: '#fff', placeholder: '#fff'}}}
               label="Mobile (Optional)"
               keyboardType="numeric"
               // value={this.state.mobile}
@@ -66,7 +63,6 @@ export default function Login({navigation}) {
           <View>
             <TextInput
               style={styles.inputStyle}
-              theme={{colors: {text: '#fff', placeholder: '#fff'}}}
               label="Password"
               secureTextEntry={true}
               // value={this.state.loginPin}
@@ -77,7 +73,6 @@ export default function Login({navigation}) {
             </HelperText>
             <TextInput
               style={styles.inputStyle}
-              theme={{colors: {text: '#fff', placeholder: '#fff'}}}
               label="Confirm Password"
               secureTextEntry={true}
               // value={this.state.loginPin}
@@ -114,10 +109,9 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     flexGrow: 1,
-    backgroundColor: 'grey',
   },
   overlay: {
-    backgroundColor: '#a4a4a49e',
+    backgroundColor: '#fff',
     padding: 20,
     marginHorizontal: 20,
   },
