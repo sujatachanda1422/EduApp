@@ -7,9 +7,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 export default function Worklist({navigation}) {
   const register = () => {};
 
-  const onSubjectClick = () => {
+  const onSubjectClick = (item) => {
     navigation.navigate('HomeComp', {
-      screen: 'Login',
+      screen: 'WorklistDetails',
     });
   };
 
@@ -25,7 +25,7 @@ export default function Worklist({navigation}) {
               <TouchableOpacity
                 activeOpacity={0.9}
                 style={styles.item}
-                // onPress={() => onSubjectClick(item)}
+                onPress={() => onSubjectClick(item)}
               >
                 <View style={{flex: 1}}>
                   <Text style={styles.itemHeader}>{item.name}</Text>

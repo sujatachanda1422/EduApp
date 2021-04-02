@@ -1,33 +1,31 @@
 {
     "list": [{
-            "name": "Stories",
-            "tagline": "Learning experiences",
-            "icon": "stories"
-        },
-        {
-            "name": "Rhymes",
-            "tagline": "Traditional poems",
-            "icon": "rhymes"
-        },
-        {
-            "name": "Reading",
-            "tagline": "Word recognition",
-            "icon": "reading"
-        },
-        {
             "name": "Language",
-            "tagline": "Enhance vocabulary",
-            "icon": "language"
+            "icon": "language",
+            "subCategory": ["Concept", "Writing", "Activities"]
         },
         {
             "name": "Numbers",
-            "tagline": "Learn numerical skills",
-            "icon": "numbers"
+            "icon": "numbers",
+            "subCategory": ["Concept", "Writing", "Activities"]
         },
         {
-            "name": "Themes",
-            "tagline": "Explore various genres",
-            "icon": "themes"
+            "name": "EVS",
+            "icon": "evs",
+            "subCategory": ["Concept", "Writing", "Activities"]
+        },
+        {
+            "name": "Concept",
+            "icon": "concept"
+        },
+
+        {
+            "name": "Activities",
+            "icon": "activities"
+        },
+        {
+            "name": "Rhymes",
+            "icon": "rhymes"
         }
     ]
 }

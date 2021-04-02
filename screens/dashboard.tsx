@@ -14,29 +14,35 @@ import {
 import * as subjects from '../data/subjects.json';
 import * as Images from '../data/images';
 
-// let image = require('../images/book.png');
+let bkg = require('../images/register-bkg.png');
 
 export default function Dashboard({navigation}) {
   const register = () => {};
 
   const onSubjectClick = (item) => {
-    navigation.navigate('HomeComp', {
-      screen: 'Lesson',
-    });
+    if (item.subCategory) {
+      navigation.navigate('HomeComp', {
+        screen: 'SubjectCategory',
+        params: {
+          subCategory: item.subCategory,
+          name: item.name,
+        }
+      });
+    } else {
+      navigation.navigate('HomeComp', {
+        screen: 'Lesson',
+      });
+    }
   };
 
   return (
     <View style={styles.container}>
+      <ImageBackground source={bkg} style={styles.image}>
+        <Text style={styles.headerStyle}>School</Text>
+        <Text style={styles.headerStyle}>Anytime</Text>
+        <Text style={styles.headerStyle}>Anywhere</Text>
+      </ImageBackground>
       <View style={styles.wrapper}>
-        {/* <View>
-          <TextInput
-            style={styles.inputStyle}
-            placeholder="Search subject"
-            // value={this.state.mobile}
-            // onChangeText={(val) => this.updateInputVal(val, 'mobile')}
-            maxLength={10}
-          />
-        </View> */}
         <FlatList
           data={subjects.list}
           keyExtractor={(item, index) => index.toString()}
@@ -49,11 +55,12 @@ export default function Dashboard({navigation}) {
                 activeOpacity={0.9}
                 style={styles.item}
                 onPress={() => onSubjectClick(item)}>
-                <Image
-                  source={Images[item.icon]}
-                  style={styles.listIcon}></Image>
+                <View style={styles.listIconWrapper}>
+                  <Image
+                    source={Images[item.icon]}
+                    style={styles.listIcon}></Image>
+                </View>
                 <Text style={styles.itemText}>{item.name}</Text>
-                <Text style={styles.itemTextContext}>{item.tagline}</Text>
               </TouchableOpacity>
             );
           }}
@@ -66,26 +73,29 @@ export default function Dashboard({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
     justifyContent: 'center',
   },
   wrapper: {
     flex: 1,
     margin: 20,
   },
-  inputStyle: {
-    width: '100%',
-    margin: 25,
-    padding: 10,
-    alignSelf: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 2,
+  headerStyle: {
+    fontSize: 42,
+    marginLeft: 110,
   },
   listContainer: {
     paddingTop: 20,
   },
+  image: {
+    height: 260,
+    justifyContent: 'center',
+    overflow: 'hidden',
+    borderBottomLeftRadius: 200,
+    borderBottomRightRadius: 200,
+    transform: [{scaleX: 1.4}],
+  },
   item: {
-    height: 200,
+    height: 150,
     paddingHorizontal: 10,
     elevation: 5,
     justifyContent: 'center',
@@ -93,7 +103,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
     marginHorizontal: 10,
-    borderRadius: 10,
+    borderRadius: 6,
     backgroundColor: '#fff',
   },
   listIcon: {
@@ -105,9 +115,7 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 18,
   },
-  itemTextContext: {
-    fontSize: 12,
-    marginTop: 5,
-    color: '#2dadb3',
+  listIconWrapper: {
+    backgroundColor: '#fff',
   },
 });

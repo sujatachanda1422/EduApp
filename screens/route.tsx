@@ -7,6 +7,8 @@ import Dashboard from './dashboard';
 import Role from './role';
 import Lesson from './lesson';
 import LessonDetails from './lessonDetails';
+import WorklistDetails from './worklistDetails';
+import SubjectCategory from './subjectCategory';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
 const Drawer = createDrawerNavigator();
@@ -50,8 +52,7 @@ function HomeComp() {
         name="Dashboard"
         component={Dashboard}
         options={{
-          title: 'Kindergarten',
-          headerLeft: null,
+          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -67,6 +68,20 @@ function HomeComp() {
         options={{
           title: 'The Numbers Song',
         }}
+      />
+      <Stack.Screen
+        name="WorklistDetails"
+        component={WorklistDetails}
+        options={{
+          title: 'The Numbers Song',
+        }}
+      />
+      <Stack.Screen
+        name="SubjectCategory"
+        component={SubjectCategory}
+        options={({navigation}) => ({
+          headerShown: false,
+        })}
       />
     </Stack.Navigator>
   );

@@ -11,15 +11,13 @@ import {
   Text,
   BackHandler,
 } from 'react-native';
-import {LoginButton, AccessToken} from 'react-native-fbsdk';
 import {LoginManager} from 'react-native-fbsdk';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 
-const bkg = require('../images/blue-background.jpg');
-const logo = require('../images/book.png');
+const logo = require('../images/bee.png');
 const appName = require('../images/app-name.png');
 
 export default class Login extends Component {
@@ -82,72 +80,57 @@ export default class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ImageBackground source={bkg} style={styles.image}>
-          <View style={styles.overlay}>
-            <View
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                marginTop: 20,
-              }}>
-              <Image
-                source={logo}
-                style={{marginTop: 10, width: 100, height: 100}}></Image>
-              <Image source={appName} style={styles.appName}></Image>
-              <Text style={styles.contextLine}>Learn Anytime Anywhere</Text>
-            </View>
-            <View style={{flex: 1}}>
-              <View>
-                <TextInput
-                  style={styles.inputStyle}
-                  placeholder="Mobile"
-                  keyboardType="numeric"
-                  // value={this.state.mobile}
-                  // onChangeText={(val) => this.updateInputVal(val, 'mobile')}
-                  maxLength={10}
-                />
-                <TextInput
-                  style={styles.inputStyle}
-                  placeholder="Password"
-                  secureTextEntry={true}
-                  // value={this.state.loginPin}
-                  // onChangeText={(val) => this.updateInputVal(val, 'loginPin')}
-                />
+        <View style={styles.overlay}>
+          <Image source={appName} style={styles.appName}></Image>
+          <View style={{flex: 1}}>
+            <View>
+              <TextInput
+                style={styles.inputStyle}
+                placeholder="Mobile"
+                keyboardType="numeric"
+                placeholderTextColor="#fff"
+                // value={this.state.mobile}
+                // onChangeText={(val) => this.updateInputVal(val, 'mobile')}
+                maxLength={10}
+              />
+              <TextInput
+                style={styles.inputStyle}
+                placeholder="Password"
+                secureTextEntry={true}
+                placeholderTextColor="#fff"
+                // value={this.state.loginPin}
+                // onChangeText={(val) => this.updateInputVal(val, 'loginPin')}
+              />
+              <View style={{marginTop: 10}}>
                 <Button
-                  color="#2dadb3"
-                  title="Sign In"
+                  color="#d13fa4"
+                  title="Login"
                   onPress={() => this.userLogin()}
                 />
               </View>
-              <View style={styles.loginBtn}>
-                <Text style={styles.signUp} onPress={() => this.register()}>
-                  Sign Up
-                </Text>
+            </View>
+            <View style={styles.loginBtn}>
+              <View style={styles.fbBtn}>
+                <Button
+                  color="#1877f2"
+                  title="Facebook"
+                  onPress={() => this.facebookLogin()}
+                />
               </View>
-              <View style={styles.loginBtn}>
-                <Text style={styles.before}></Text>
-                <Text style={styles.dividerText}> OR </Text>
-                <Text style={styles.before}></Text>
-              </View>
-              <View style={styles.loginBtn}>
-                <View style={styles.fbBtn}>
-                  <Button
-                    color="#1877f2"
-                    title="Facebook"
-                    onPress={() => this.facebookLogin()}
-                  />
-                </View>
-                <View style={styles.googleBtn}>
-                  <Button
-                    color="#f55"
-                    title="Google"
-                    onPress={() => this.googleLogin()}
-                  />
-                </View>
+              <View style={styles.googleBtn}>
+                <Button
+                  color="#f55"
+                  title="Google"
+                  onPress={() => this.googleLogin()}
+                />
               </View>
             </View>
+            <Text style={styles.signUp} onPress={() => this.register()}>
+              Sign Up
+            </Text>
+            <Image source={logo} style={styles.logo}></Image>
           </View>
-        </ImageBackground>
+        </View>
       </View>
     );
   }
@@ -160,24 +143,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   overlay: {
-    backgroundColor: 'rgba(199,199,199,0.3)',
+    backgroundColor: '#fff',
     height: '100%',
     flexDirection: 'column',
     justifyContent: 'center',
-    padding: 20,
+    paddingHorizontal: 40,
   },
   loginBtn: {
-    marginBottom: 20,
+    marginVertical: 20,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
+    
   },
   appName: {
     width: '80%',
-    height: 100,
-    marginTop: 20,
-    resizeMode: 'contain',
-    marginBottom: -15,
+    height: 200,
+    alignSelf: 'center',
+    marginVertical: 20
   },
   contextLine: {
     color: '#fff',
@@ -189,10 +171,11 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     width: '100%',
-    marginBottom: 25,
+    marginBottom: 15,
+    color: '#fff',
     padding: 10,
     alignSelf: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#98eaf2',
     borderRadius: 2,
   },
   fbBtn: {
@@ -203,17 +186,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   signUp: {
-    color: '#fff',
-    marginTop: 20,
+    color: 'blue',
     fontSize: 18,
+    alignSelf: 'center',
   },
   before: {
     backgroundColor: '#fff',
     height: 1,
     width: '40%',
   },
-  dividerText: {
-    color: '#fff',
+  logo: {
+    marginTop: 40,
+    width: 250,
+    height: 250,
+    alignSelf: 'center',
   },
   preloader: {
     left: 0,
