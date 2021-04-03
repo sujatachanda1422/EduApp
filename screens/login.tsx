@@ -19,6 +19,8 @@ import {
 
 const logo = require('../images/bee.png');
 const appName = require('../images/app-name.png');
+const user1 = require('../images/user1.png');
+const user2 = require('../images/user2.png');
 
 export default class Login extends Component {
   constructor() {
@@ -83,31 +85,33 @@ export default class Login extends Component {
         <View style={styles.overlay}>
           <Image source={appName} style={styles.appName}></Image>
           <View style={{flex: 1}}>
-            <View>
+            <View style={styles.inputContainer}>
+              <Image source={user1} style={styles.userIcon}></Image>
               <TextInput
                 style={styles.inputStyle}
-                placeholder="Mobile"
-                keyboardType="numeric"
+                placeholder="Username"
                 placeholderTextColor="#fff"
                 // value={this.state.mobile}
                 // onChangeText={(val) => this.updateInputVal(val, 'mobile')}
-                maxLength={10}
               />
+            </View>
+            <View style={styles.inputContainer}>
+              <Image source={user2} style={styles.userIcon}></Image>
               <TextInput
-                style={styles.inputStyle}
+                style={[styles.inputStyle, {height: 45}]}
                 placeholder="Password"
                 secureTextEntry={true}
                 placeholderTextColor="#fff"
                 // value={this.state.loginPin}
                 // onChangeText={(val) => this.updateInputVal(val, 'loginPin')}
               />
-              <View style={{marginTop: 10}}>
-                <Button
-                  color="#d13fa4"
-                  title="Login"
-                  onPress={() => this.userLogin()}
-                />
-              </View>
+            </View>
+            <View style={{marginTop: 10}}>
+              <Button
+                color="#e9165b"
+                title="Login"
+                onPress={() => this.userLogin()}
+              />
             </View>
             <View style={styles.loginBtn}>
               <View style={styles.fbBtn}>
@@ -153,13 +157,12 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     flexDirection: 'row',
     justifyContent: 'center',
-    
   },
   appName: {
     width: '80%',
     height: 200,
     alignSelf: 'center',
-    marginVertical: 20
+    marginVertical: 20,
   },
   contextLine: {
     color: '#fff',
@@ -170,13 +173,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   inputStyle: {
-    width: '100%',
-    marginBottom: 15,
+    width: '90%',
     color: '#fff',
     padding: 10,
     alignSelf: 'center',
-    backgroundColor: '#98eaf2',
+    backgroundColor: '#ade0f2',
     borderRadius: 2,
+    height: 46
   },
   fbBtn: {
     flex: 1,
@@ -201,14 +204,15 @@ const styles = StyleSheet.create({
     height: 250,
     alignSelf: 'center',
   },
-  preloader: {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    position: 'absolute',
-    alignItems: 'center',
+  userIcon: {
+    width: 45,
+    height: 53,
+    resizeMode: 'contain',
+    marginRight: -1
+  },
+  inputContainer: {
+    flexDirection: 'row',
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    marginBottom: 15,
   },
 });

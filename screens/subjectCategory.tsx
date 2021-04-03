@@ -10,7 +10,7 @@ import {
 import * as Images from '../data/images';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-// const image = require("../images/login.jpg");
+let shadow = require('../images/shadow.png');
 
 export default function SubjectCategory({route, navigation}) {
   const {name, subCategory} = route.params;
@@ -54,6 +54,9 @@ export default function SubjectCategory({route, navigation}) {
                 style={styles.item}
                 onPress={() => onSubjectClick(item)}>
                 <View style={styles.listIconWrapper}>
+                <Image
+                    source={shadow}
+                    style={styles.shadowImg}></Image>
                   <Image
                     source={Images[item.toLowerCase()]}
                     style={styles.listIcon}></Image>
@@ -74,7 +77,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    backgroundColor: '#d6e2e8',
   },
   wrapper: {
     flex: 1,
@@ -99,7 +101,7 @@ const styles = StyleSheet.create({
   listIcon: {
     width: 70,
     height: 70,
-    marginBottom: 15,
+    marginBottom: 30,
     resizeMode: 'contain',
   },
   itemText: {
@@ -108,7 +110,6 @@ const styles = StyleSheet.create({
   headerItemText: {
     fontSize: 30,
     color: '#ff1ea5',
-    marginTop:10
   },
   listIconWrapper: {
     backgroundColor: '#fff',
@@ -121,5 +122,11 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     marginBottom: 0,
+  },
+  shadowImg: {
+    position: 'absolute',
+    left: -20,
+    width: 110,
+    height: 100
   },
 });

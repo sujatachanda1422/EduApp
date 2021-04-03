@@ -14,7 +14,8 @@ import {
 import * as subjects from '../data/subjects.json';
 import * as Images from '../data/images';
 
-let bkg = require('../images/register-bkg.png');
+let bkg = require('../images/header.jpg');
+let shadow = require('../images/shadow.png');
 
 export default function Dashboard({navigation}) {
   const register = () => {};
@@ -57,6 +58,9 @@ export default function Dashboard({navigation}) {
                 onPress={() => onSubjectClick(item)}>
                 <View style={styles.listIconWrapper}>
                   <Image
+                    source={shadow}
+                    style={styles.shadowImg}></Image>
+                  <Image
                     source={Images[item.icon]}
                     style={styles.listIcon}></Image>
                 </View>
@@ -96,7 +100,6 @@ const styles = StyleSheet.create({
   },
   item: {
     height: 150,
-    paddingHorizontal: 10,
     elevation: 5,
     justifyContent: 'center',
     flex: 1,
@@ -117,5 +120,12 @@ const styles = StyleSheet.create({
   },
   listIconWrapper: {
     backgroundColor: '#fff',
+    marginBottom: 15
+  },
+  shadowImg: {
+    position: 'absolute',
+    left: -20,
+    width: 110,
+    height: 100
   },
 });

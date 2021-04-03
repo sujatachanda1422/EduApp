@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import * as videos from '../data/videos.json';
 
-const video = require('../images/video.jpg');
+const video = require('../images/video.png');
 
 export default function Videos({navigation}) {
   const register = () => {};
