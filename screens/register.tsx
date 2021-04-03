@@ -2,13 +2,16 @@ import React, {useState} from 'react';
 import {StyleSheet, View, ImageBackground, ScrollView} from 'react-native';
 
 import {HelperText, TextInput, Button, Text} from 'react-native-paper';
+import {http} from '../services/http';
 
 const bkg = require('../images/register-bkg.png');
 
 export default function Register({navigation}) {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-
-  const onChangeEmail = (email) => setEmail(email);
+  const [mobile, setMobile] = useState('');
+  const [pwd, setPwd] = useState('');
+  const [confirmPwd, setconfirmPwd] = useState('');
 
   const hasErrors = () => {
     return false;
@@ -16,9 +19,30 @@ export default function Register({navigation}) {
   };
 
   const register = () => {
-    navigation.navigate('HomeComp', {
-      screen: 'Role',
-    });
+    const param = {
+      name,
+      email,
+      mobile,
+      pwd,
+    };
+
+    console.log('Val = ', param);
+
+    http
+      .post(
+        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/register',
+        param,
+      )
+      .then((response) => response.json())
+      .then((res) => {
+        console.log("Data = ", res);
+        navigation.navigate('HomeComp', {
+          screen: 'Role',
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
@@ -29,8 +53,8 @@ export default function Register({navigation}) {
             <TextInput
               style={styles.inputStyle}
               label="Fullname"
-              // value={this.state.mobile}
-              // onChangeText={(val) => this.updateInputVal(val, 'mobile')}
+              value={name}
+              onChangeText={(name) => setName(name)}
             />
             <HelperText type="error" visible={hasErrors()}>
               Please enter fullname
@@ -41,7 +65,7 @@ export default function Register({navigation}) {
               label="Email"
               value={email}
               style={styles.inputStyle}
-              onChangeText={onChangeEmail}
+              onChangeText={(email) => setEmail(email)}
             />
             <HelperText type="error" visible={hasErrors()}>
               Email address is invalid!
@@ -52,8 +76,8 @@ export default function Register({navigation}) {
               style={styles.inputStyle}
               label="Mobile (Optional)"
               keyboardType="numeric"
-              // value={this.state.mobile}
-              // onChangeText={(val) => this.updateInputVal(val, 'mobile')}
+              value={mobile}
+              onChangeText={(mobile) => setMobile(mobile)}
               maxLength={10}
             />
             <HelperText type="error" visible={hasErrors()}>
@@ -65,8 +89,8 @@ export default function Register({navigation}) {
               style={styles.inputStyle}
               label="Password"
               secureTextEntry={true}
-              // value={this.state.loginPin}
-              // onChangeText={(val) => this.updateInputVal(val, 'loginPin')}
+              value={pwd}
+              onChangeText={(pwd) => setPwd(pwd)}
             />
             <HelperText type="error" visible={hasErrors()}>
               Please eneter password
@@ -75,8 +99,8 @@ export default function Register({navigation}) {
               style={styles.inputStyle}
               label="Confirm Password"
               secureTextEntry={true}
-              // value={this.state.loginPin}
-              // onChangeText={(val) => this.updateInputVal(val, 'loginPin')}
+              value={confirmPwd}
+              onChangeText={(confirmPwd) => setconfirmPwd(confirmPwd)}
             />
             <HelperText type="error" visible={hasErrors()}>
               Password does not match

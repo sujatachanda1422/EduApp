@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -16,29 +16,25 @@ import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import {http} from '../services/http';
 
 const logo = require('../images/bee.png');
 const appName = require('../images/app-name.png');
 const user1 = require('../images/user1.png');
 const user2 = require('../images/user2.png');
 
-export default class Login extends Component {
-  constructor() {
-    super();
-  }
+export default function Login({navigation}) {
+  const [email, setEmail] = useState('');
+  const [pwd, setPwd] = useState('');
 
-  handleBackButton = () => {
-    BackHandler.exitApp();
-  };
-
-  facebookLogin = () => {
+  const facebookLogin = () => {
     LoginManager.logInWithPermissions(['public_profile']).then(
       (result) => {
         if (result.isCancelled) {
           console.log('Login cancelled');
         } else {
           console.log('Login success with permissions:');
-          this.props.navigation.navigate('HomeComp', {
+          navigation.navigate('HomeComp', {
             screen: 'Dashboard',
           });
         }
@@ -48,12 +44,13 @@ export default class Login extends Component {
       },
     );
   };
-  googleLogin = async () => {
+
+  const googleLogin = async () => {
     try {
       await GoogleSignin.configure();
       const userInfo = await GoogleSignin.signIn();
       console.log('User = ', userInfo);
-      this.props.navigation.navigate('HomeComp', {
+      navigation.navigate('HomeComp', {
         screen: 'Dashboard',
       });
     } catch (error) {
@@ -67,77 +64,83 @@ export default class Login extends Component {
     }
   };
 
-  register = () => {
-    this.props.navigation.navigate('HomeComp', {
+  const register = () => {
+    navigation.navigate('HomeComp', {
       screen: 'Register',
     });
   };
 
-  userLogin = () => {
-    this.props.navigation.navigate('HomeComp', {
-      screen: 'Dashboard',
-    });
+  const userLogin = () => {
+    http
+      .post(
+        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/login',
+        {email, pwd},
+      )
+      .then((response) => response.json())
+      .then((res) => {
+        console.log('Data = ', res);
+        navigation.navigate('HomeComp', {
+          screen: 'Dashboard',
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.overlay}>
-          <Image source={appName} style={styles.appName}></Image>
-          <View style={{flex: 1}}>
-            <View style={styles.inputContainer}>
-              <Image source={user1} style={styles.userIcon}></Image>
-              <TextInput
-                style={styles.inputStyle}
-                placeholder="Username"
-                placeholderTextColor="#fff"
-                // value={this.state.mobile}
-                // onChangeText={(val) => this.updateInputVal(val, 'mobile')}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Image source={user2} style={styles.userIcon}></Image>
-              <TextInput
-                style={[styles.inputStyle, {height: 45}]}
-                placeholder="Password"
-                secureTextEntry={true}
-                placeholderTextColor="#fff"
-                // value={this.state.loginPin}
-                // onChangeText={(val) => this.updateInputVal(val, 'loginPin')}
-              />
-            </View>
-            <View style={{marginTop: 10}}>
-              <Button
-                color="#e9165b"
-                title="Login"
-                onPress={() => this.userLogin()}
-              />
-            </View>
-            <View style={styles.loginBtn}>
-              <View style={styles.fbBtn}>
-                <Button
-                  color="#1877f2"
-                  title="Facebook"
-                  onPress={() => this.facebookLogin()}
-                />
-              </View>
-              <View style={styles.googleBtn}>
-                <Button
-                  color="#f55"
-                  title="Google"
-                  onPress={() => this.googleLogin()}
-                />
-              </View>
-            </View>
-            <Text style={styles.signUp} onPress={() => this.register()}>
-              Sign Up
-            </Text>
-            <Image source={logo} style={styles.logo}></Image>
+  return (
+    <View style={styles.container}>
+      <View style={styles.overlay}>
+        <Image source={appName} style={styles.appName}></Image>
+        <View style={{flex: 1}}>
+          <View style={styles.inputContainer}>
+            <Image source={user1} style={styles.userIcon}></Image>
+            <TextInput
+              style={styles.inputStyle}
+              placeholder="Username"
+              placeholderTextColor="#fff"
+              value={email}
+              onChangeText={(email) => setEmail(email)}
+            />
           </View>
+          <View style={styles.inputContainer}>
+            <Image source={user2} style={styles.userIcon}></Image>
+            <TextInput
+              style={[styles.inputStyle, {height: 45}]}
+              placeholder="Password"
+              secureTextEntry={true}
+              placeholderTextColor="#fff"
+              value={pwd}
+              onChangeText={(pwd) => setPwd(pwd)}
+            />
+          </View>
+          <View style={{marginTop: 10}}>
+            <Button color="#e9165b" title="Login" onPress={() => userLogin()} />
+          </View>
+          <View style={styles.loginBtn}>
+            <View style={styles.fbBtn}>
+              <Button
+                color="#1877f2"
+                title="Facebook"
+                onPress={() => facebookLogin()}
+              />
+            </View>
+            <View style={styles.googleBtn}>
+              <Button
+                color="#f55"
+                title="Google"
+                onPress={() => googleLogin()}
+              />
+            </View>
+          </View>
+          <Text style={styles.signUp} onPress={() => register()}>
+            Sign Up
+          </Text>
+          <Image source={logo} style={styles.logo}></Image>
         </View>
       </View>
-    );
-  }
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -179,7 +182,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: '#ade0f2',
     borderRadius: 2,
-    height: 46
+    height: 46,
   },
   fbBtn: {
     flex: 1,
@@ -208,7 +211,7 @@ const styles = StyleSheet.create({
     width: 45,
     height: 53,
     resizeMode: 'contain',
-    marginRight: -1
+    marginRight: -1,
   },
   inputContainer: {
     flexDirection: 'row',

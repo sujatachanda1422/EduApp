@@ -1,0 +1,68 @@
+# Welcome to serverless. Read the docs
+# https://serverless.com/framework/docs/
+
+# Serverless.yml is the configuration the CLI
+# uses to deploy your code to your provider of choice
+
+# The `service` block is the name of the service
+service: Issschool
+
+frameworkVersion: '2'
+
+# The `provider` block defines where your service will be deployed
+custom:
+  bucket: issschool-lambda-example
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stackName: register
+  stage: dev
+  environment:
+      USERS_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: '*'
+
+# The `functions` block defines what code to deploy
+functions:
+  create:
+    handler: register.signUp
+    # The `events` block defines how to trigger the handler.register code
+    events:
+      - http:
+          path: register
+          method: post
+          cors: true
+  login:
+    handler: login.login
+    # The `events` block defines how to trigger the handler.register code
+    events:
+      - http:
+          path: login
+          method: post
+          cors: true
+
+resources:
+  Resources:
+    UsersDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: email
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: email
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.USERS_TABLE}
