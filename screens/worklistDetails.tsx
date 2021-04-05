@@ -19,7 +19,7 @@ export default function WorklistDetails({navigation}) {
           // style={{flex: 1}}
           originWhitelist={['*']}
           source={{
-            uri: 'file:///android_asset/AlphabetWriting/story_html5.html',
+            uri: 'https://issschool-scorm.s3.amazonaws.com/AlphabetWriting/story_html5.html',
           }}
           style={{flex: 1.0}}
           javaScriptEnabled={true}

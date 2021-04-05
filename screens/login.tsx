@@ -71,6 +71,11 @@ export default function Login({navigation}) {
   };
 
   const userLogin = () => {
+    navigation.navigate('HomeComp', {
+      screen: 'Dashboard',
+    });
+
+    return;
     http
       .post(
         'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/login',
