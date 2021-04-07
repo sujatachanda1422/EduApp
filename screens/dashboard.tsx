@@ -3,18 +3,15 @@ import {
   StyleSheet,
   View,
   FlatList,
-  TextInput,
   TouchableOpacity,
-  ImageBackground,
   Image,
-  Alert,
   Text,
   BackHandler,
 } from 'react-native';
 import * as subjects from '../data/subjects.json';
 import * as Images from '../data/images';
 
-let bkg = require('../images/header.jpg');
+let user = require('../images/user.jpg');
 let shadow = require('../images/shadow.png');
 
 export default function Dashboard({navigation}) {
@@ -27,7 +24,7 @@ export default function Dashboard({navigation}) {
         params: {
           subCategory: item.subCategory,
           name: item.name,
-        }
+        },
       });
     } else {
       navigation.navigate('HomeComp', {
@@ -38,11 +35,11 @@ export default function Dashboard({navigation}) {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={bkg} style={styles.image}>
-        <Text style={styles.headerStyle}>School</Text>
-        <Text style={styles.headerStyle}>Anytime</Text>
-        <Text style={styles.headerStyle}>Anywhere</Text>
-      </ImageBackground>
+      <View style={styles.imageWrapper}>
+        <Image source={user} style={styles.userImg}></Image>
+        <Text style={styles.userName}>Suman Sinha</Text>
+        <Text style={styles.class}>Kindergarten</Text>
+      </View>
       <View style={styles.wrapper}>
         <FlatList
           data={subjects.list}
@@ -57,9 +54,7 @@ export default function Dashboard({navigation}) {
                 style={styles.item}
                 onPress={() => onSubjectClick(item)}>
                 <View style={styles.listIconWrapper}>
-                  <Image
-                    source={shadow}
-                    style={styles.shadowImg}></Image>
+                  <Image source={shadow} style={styles.shadowImg}></Image>
                   <Image
                     source={Images[item.icon]}
                     style={styles.listIcon}></Image>
@@ -78,17 +73,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    padding: 20,
   },
   wrapper: {
     flex: 1,
-    margin: 20,
   },
   headerStyle: {
     fontSize: 42,
     marginLeft: 110,
   },
   listContainer: {
-    paddingTop: 20,
+    // paddingTop: 20,
   },
   image: {
     height: 260,
@@ -120,12 +115,32 @@ const styles = StyleSheet.create({
   },
   listIconWrapper: {
     backgroundColor: '#fff',
-    marginBottom: 15
+    marginBottom: 15,
   },
   shadowImg: {
     position: 'absolute',
     left: -20,
     width: 110,
-    height: 100
+    height: 100,
+  },
+  imageWrapper: {
+    justifyContent: 'center',
+    marginVertical: 50,
+    alignItems: 'center',
+  },
+  userImg: {
+    width: 100,
+    height: 100,
+    borderRadius: 40,
+    overflow: 'hidden',
+    resizeMode: 'contain',
+  },
+  userName: {
+    fontSize: 22,
+    marginTop: 20
+  },
+  class: {
+    fontSize: 16,
+    marginTop: 5
   },
 });
