@@ -9,6 +9,7 @@
       "runtime": "nodejs14.x",
       "stackName": "register",
       "stage": "dev",
+      "individually": true,
       "environment": {
         "USERS_TABLE": "Issschool-dev"
       },
@@ -27,6 +28,7 @@
       "variableSyntax": "\\${([^{}:]+?(?:\\(|:)(?:[^:{}][^{}]*?)?)}",
       "region": "us-east-1",
       "versionFunctions": true,
+      "package": null,
       "compiledCloudFormationTemplate": {
         "AWSTemplateFormatVersion": "2010-09-09",
         "Description": "The AWS CloudFormation template for this Serverless application",
@@ -110,6 +112,12 @@
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
               "LogGroupName": "/aws/lambda/Issschool-dev-login"
+            }
+          },
+          "ClassListLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/Issschool-dev-classList"
             }
           },
           "IamRoleLambdaExecution": {
@@ -199,7 +207,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1617467105445-2021-04-03T16:25:05.445Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1617985160795-2021-04-09T16:19:20.795Z/Issschool.zip"
               },
               "Handler": "register.signUp",
               "Runtime": "nodejs14.x",
@@ -229,7 +237,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1617467105445-2021-04-03T16:25:05.445Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1617985160795-2021-04-09T16:19:20.795Z/Issschool.zip"
               },
               "Handler": "login.login",
               "Runtime": "nodejs14.x",
@@ -252,24 +260,64 @@
               "LoginLogGroup"
             ]
           },
-          "LoginLambdaVersionZ2GUm7YwZigaf6PSGAMzHi149YQr5Fzl1sb4dXkPRbw": {
+          "ClassListLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/Issschool/dev/1617985160795-2021-04-09T16:19:20.795Z/Issschool.zip"
+              },
+              "Handler": "classDetails.classList",
+              "Runtime": "nodejs14.x",
+              "FunctionName": "Issschool-dev-classList",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "USERS_TABLE": "Issschool-dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ClassListLogGroup"
+            ]
+          },
+          "LoginLambdaVersionhnabt55pBnOhGLLziBdgaPX8MTtReJMXf8SngPUn0": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "LoginLambdaFunction"
               },
-              "CodeSha256": "gJJ3Bnfy/rUQkdncRLC2cCU5iiBgkq7xnS5pwv6ZxLg="
+              "CodeSha256": "YAC/uZpoQfBVxkFAchGpHBLzbnlhAzrFgQBcjZQ0mBA="
             }
           },
-          "CreateLambdaVersionzcJcOqaWebLYR5JkiaOhJhRZFBpnkBFQXQDurLu0": {
+          "ClassListLambdaVersion2DAZSpWxEm5qAzie9W13GlOryoP0yasTvlLG2MsSw": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ClassListLambdaFunction"
+              },
+              "CodeSha256": "YAC/uZpoQfBVxkFAchGpHBLzbnlhAzrFgQBcjZQ0mBA="
+            }
+          },
+          "CreateLambdaVersion8unDQZuPtV2e4WhMyju7p7uF8lliXC0dqrkcLcQXM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateLambdaFunction"
               },
-              "CodeSha256": "gJJ3Bnfy/rUQkdncRLC2cCU5iiBgkq7xnS5pwv6ZxLg="
+              "CodeSha256": "YAC/uZpoQfBVxkFAchGpHBLzbnlhAzrFgQBcjZQ0mBA="
             }
           },
           "ApiGatewayRestApi": {
@@ -309,6 +357,33 @@
                 ]
               },
               "PathPart": "login",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceClasslist": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "classList",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceClasslistNameVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceClasslist"
+              },
+              "PathPart": "{name}",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -490,7 +565,50 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1617467101747": {
+          "ApiGatewayMethodClasslistNameVarGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceClasslistNameVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ClassListLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1617985158351": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -502,7 +620,8 @@
               "ApiGatewayMethodRegisterOptions",
               "ApiGatewayMethodLoginOptions",
               "ApiGatewayMethodRegisterPost",
-              "ApiGatewayMethodLoginPost"
+              "ApiGatewayMethodLoginPost",
+              "ApiGatewayMethodClasslistNameVarGet"
             ]
           },
           "CreateLambdaPermissionApiGateway": {
@@ -579,6 +698,43 @@
               }
             }
           },
+          "ClassListLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ClassListLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
           "UsersDynamoDbTable": {
             "Type": "AWS::DynamoDB::Table",
             "DeletionPolicy": "Retain",
@@ -612,13 +768,19 @@
           "LoginLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "LoginLambdaVersionZ2GUm7YwZigaf6PSGAMzHi149YQr5Fzl1sb4dXkPRbw"
+              "Ref": "LoginLambdaVersionhnabt55pBnOhGLLziBdgaPX8MTtReJMXf8SngPUn0"
+            }
+          },
+          "ClassListLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ClassListLambdaVersion2DAZSpWxEm5qAzie9W13GlOryoP0yasTvlLG2MsSw"
             }
           },
           "CreateLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateLambdaVersionzcJcOqaWebLYR5JkiaOhJhRZFBpnkBFQXQDurLu0"
+              "Ref": "CreateLambdaVersion8unDQZuPtV2e4WhMyju7p7uF8lliXC0dqrkcLcQXM"
             }
           },
           "ServiceEndpoint": {
@@ -771,7 +933,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "CreateLambdaVersionzcJcOqaWebLYR5JkiaOhJhRZFBpnkBFQXQDurLu0"
+        "versionLogicalId": "CreateLambdaVersion8unDQZuPtV2e4WhMyju7p7uF8lliXC0dqrkcLcQXM"
       },
       "login": {
         "handler": "login.login",
@@ -809,7 +971,26 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "LoginLambdaVersionZ2GUm7YwZigaf6PSGAMzHi149YQr5Fzl1sb4dXkPRbw"
+        "versionLogicalId": "LoginLambdaVersionhnabt55pBnOhGLLziBdgaPX8MTtReJMXf8SngPUn0"
+      },
+      "classList": {
+        "handler": "classDetails.classList",
+        "events": [
+          {
+            "http": {
+              "path": "classList/{name}",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "Issschool-dev-classList",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs14.x",
+        "vpc": {},
+        "versionLogicalId": "ClassListLambdaVersion2DAZSpWxEm5qAzie9W13GlOryoP0yasTvlLG2MsSw"
       }
     },
     "resources": {
@@ -865,7 +1046,7 @@
     "artifact": "D:\\apps\\react-native\\backend\\.serverless\\Issschool.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/Issschool/dev/1617467105445-2021-04-03T16:25:05.445Z",
+    "artifactDirectoryName": "serverless/Issschool/dev/1617985160795-2021-04-09T16:19:20.795Z",
     "artifact": "Issschool.zip"
   }
 }

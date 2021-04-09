@@ -21,7 +21,6 @@ module.exports.login = (event, context, callback) => {
 
     dynamoDb.get(params).promise()
         .then(result => {
-            console.error("Logged in data", result);
             let response;
 
             if (result.Item.pwd === pwd) {

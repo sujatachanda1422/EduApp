@@ -37,7 +37,8 @@ export default function Register({navigation}) {
       .then((res) => {
         console.log("Data = ", res);
         navigation.navigate('HomeComp', {
-          screen: 'Role',
+          // screen: 'Role',
+          screen: 'Dashboard',
         });
       })
       .catch((error) => {

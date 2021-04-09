@@ -18,6 +18,8 @@ provider:
   runtime: nodejs14.x
   stackName: register
   stage: dev
+  package:
+  individually: true
   environment:
       USERS_TABLE: ${self:service}-${opt:stage, self:provider.stage}
   iamRoleStatements:
@@ -33,7 +35,6 @@ provider:
 functions:
   create:
     handler: register.signUp
-    # The `events` block defines how to trigger the handler.register code
     events:
       - http:
           path: register
@@ -41,12 +42,17 @@ functions:
           cors: true
   login:
     handler: login.login
-    # The `events` block defines how to trigger the handler.register code
     events:
       - http:
           path: login
           method: post
           cors: true
+  classList:
+    handler: classDetails.classList
+    events:
+      - http:
+          path: classList/{name}
+          method: get
 
 resources:
   Resources:

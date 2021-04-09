@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,14 +8,40 @@ import {
   Text,
   BackHandler,
 } from 'react-native';
-import * as subjects from '../data/subjects.json';
+// import * as subjects from '../data/subjects.json';
 import * as Images from '../data/images';
+import {http} from '../services/http';
 
 let user = require('../images/user.jpg');
 let shadow = require('../images/shadow.png');
 
 export default function Dashboard({navigation}) {
-  const register = () => {};
+  const [subjects, setSubjects] = useState([]);
+
+  useEffect(() => {
+    getSubjectsList();
+  }, []);
+
+  const name = 'kg';
+
+  const getSubjectsList = () => {
+    http
+      .get(
+        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/classList/' +
+          name,
+      )
+      .then((response) => response.json())
+      .then((res) => {
+        console.log('Data = ', res);
+
+        if (res.subjects) {
+          setSubjects(res.subjects);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const onSubjectClick = (item) => {
     if (item.subCategory) {
@@ -42,7 +68,7 @@ export default function Dashboard({navigation}) {
       </View>
       <View style={styles.wrapper}>
         <FlatList
-          data={subjects.list}
+          data={subjects}
           keyExtractor={(item, index) => index.toString()}
           horizontal={false}
           numColumns={2}
@@ -56,7 +82,7 @@ export default function Dashboard({navigation}) {
                 <View style={styles.listIconWrapper}>
                   <Image source={shadow} style={styles.shadowImg}></Image>
                   <Image
-                    source={Images[item.icon]}
+                    source={Images[item.name.toLowerCase()]}
                     style={styles.listIcon}></Image>
                 </View>
                 <Text style={styles.itemText}>{item.name}</Text>
@@ -137,10 +163,10 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 22,
-    marginTop: 20
+    marginTop: 20,
   },
   class: {
     fontSize: 16,
-    marginTop: 5
+    marginTop: 5,
   },
 });

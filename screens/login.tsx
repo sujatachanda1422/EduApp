@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -17,6 +17,7 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import {http} from '../services/http';
+import SplashScreen from 'react-native-splash-screen';
 
 const logo = require('../images/bee.png');
 const appName = require('../images/app-name.png');
@@ -26,6 +27,10 @@ const user2 = require('../images/user2.png');
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
+
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
 
   const facebookLogin = () => {
     LoginManager.logInWithPermissions(['public_profile']).then(
@@ -71,11 +76,11 @@ export default function Login({navigation}) {
   };
 
   const userLogin = () => {
-    navigation.navigate('HomeComp', {
-      screen: 'Dashboard',
-    });
+    // navigation.navigate('HomeComp', {
+    //   screen: 'Dashboard',
+    // });
 
-    return;
+    // return;
     http
       .post(
         'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/login',
@@ -84,9 +89,11 @@ export default function Login({navigation}) {
       .then((response) => response.json())
       .then((res) => {
         console.log('Data = ', res);
-        navigation.navigate('HomeComp', {
-          screen: 'Dashboard',
-        });
+        if (res.data) {
+          navigation.navigate('HomeComp', {
+            screen: 'Dashboard',
+          });
+        }
       })
       .catch((error) => {
         console.error(error);

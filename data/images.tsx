@@ -5,3 +5,5 @@ export const language = require('../images/language.png');
 export const numbers = require('../images/numbers.png');
 export const activities = require('../images/activities.png');
 export const writing = require('../images/writing.png');
+export const reading = require('../images/reading.png');
+export const stories = require('../images/stories.png');
