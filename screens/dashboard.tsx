@@ -44,6 +44,9 @@ export default function Dashboard({navigation}) {
   };
 
   const onSubjectClick = (item) => {
+    console.log("item = ", item);
+
+    // return;
     if (item.subCategory) {
       navigation.navigate('HomeComp', {
         screen: 'SubjectCategory',

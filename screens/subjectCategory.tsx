@@ -58,10 +58,10 @@ export default function SubjectCategory({route, navigation}) {
                     source={shadow}
                     style={styles.shadowImg}></Image>
                   <Image
-                    source={Images[item.toLowerCase()]}
+                    source={Images[item.name.toLowerCase()]}
                     style={styles.listIcon}></Image>
                 </View>
-                <Text style={styles.itemText}>{item}</Text>
+                <Text style={styles.itemText}>{item.name}</Text>
               </TouchableOpacity>
             );
           }}
