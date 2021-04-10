@@ -8,7 +8,6 @@ import {
   Text,
   BackHandler,
 } from 'react-native';
-// import * as subjects from '../data/subjects.json';
 import * as Images from '../data/images';
 import {http} from '../services/http';
 
@@ -30,21 +29,21 @@ export default function Dashboard({navigation}) {
         'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/classList/' +
           name,
       )
-      .then((response) => response.json())
-      .then((res) => {
+      .then(response => response.json())
+      .then(res => {
         console.log('Data = ', res);
 
         if (res.subjects) {
           setSubjects(res.subjects);
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
       });
   };
 
-  const onSubjectClick = (item) => {
-    console.log("item = ", item);
+  const onSubjectClick = item => {
+    console.log('item = ', item);
 
     // return;
     if (item.subCategory) {
@@ -58,6 +57,10 @@ export default function Dashboard({navigation}) {
     } else {
       navigation.navigate('HomeComp', {
         screen: 'Lesson',
+        params: {
+          lessons: item.lessons,
+          name: item.name,
+        },
       });
     }
   };

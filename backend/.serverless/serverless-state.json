@@ -120,6 +120,18 @@
               "LogGroupName": "/aws/lambda/Issschool-dev-classList"
             }
           },
+          "VideoListLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/Issschool-dev-videoList"
+            }
+          },
+          "WorkListLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/Issschool-dev-workList"
+            }
+          },
           "IamRoleLambdaExecution": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -207,7 +219,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1617985160795-2021-04-09T16:19:20.795Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1618066635747-2021-04-10T14:57:15.747Z/Issschool.zip"
               },
               "Handler": "register.signUp",
               "Runtime": "nodejs14.x",
@@ -237,7 +249,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1617985160795-2021-04-09T16:19:20.795Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1618066635747-2021-04-10T14:57:15.747Z/Issschool.zip"
               },
               "Handler": "login.login",
               "Runtime": "nodejs14.x",
@@ -267,7 +279,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1617985160795-2021-04-09T16:19:20.795Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1618066635747-2021-04-10T14:57:15.747Z/Issschool.zip"
               },
               "Handler": "classDetails.classList",
               "Runtime": "nodejs14.x",
@@ -290,34 +302,114 @@
               "ClassListLogGroup"
             ]
           },
-          "LoginLambdaVersionhnabt55pBnOhGLLziBdgaPX8MTtReJMXf8SngPUn0": {
+          "VideoListLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/Issschool/dev/1618066635747-2021-04-10T14:57:15.747Z/Issschool.zip"
+              },
+              "Handler": "videos.videoList",
+              "Runtime": "nodejs14.x",
+              "FunctionName": "Issschool-dev-videoList",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "USERS_TABLE": "Issschool-dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "VideoListLogGroup"
+            ]
+          },
+          "WorkListLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/Issschool/dev/1618066635747-2021-04-10T14:57:15.747Z/Issschool.zip"
+              },
+              "Handler": "videos.workList",
+              "Runtime": "nodejs14.x",
+              "FunctionName": "Issschool-dev-workList",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "USERS_TABLE": "Issschool-dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "WorkListLogGroup"
+            ]
+          },
+          "LoginLambdaVersion7Rl7zFtR9KVWeUzhYbcIDd4lCZO0JWD7Yc9zfH5Kqs": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "LoginLambdaFunction"
               },
-              "CodeSha256": "YAC/uZpoQfBVxkFAchGpHBLzbnlhAzrFgQBcjZQ0mBA="
+              "CodeSha256": "IqG3r9MKmI6IXwY3As3O0cCdalcYF75RTXuIIpD2LFE="
             }
           },
-          "ClassListLambdaVersion2DAZSpWxEm5qAzie9W13GlOryoP0yasTvlLG2MsSw": {
+          "ClassListLambdaVersioneYFkTBVY61Hu2BReB0Bt0zO37UJit8oJGb08I7zvkY": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ClassListLambdaFunction"
               },
-              "CodeSha256": "YAC/uZpoQfBVxkFAchGpHBLzbnlhAzrFgQBcjZQ0mBA="
+              "CodeSha256": "IqG3r9MKmI6IXwY3As3O0cCdalcYF75RTXuIIpD2LFE="
             }
           },
-          "CreateLambdaVersion8unDQZuPtV2e4WhMyju7p7uF8lliXC0dqrkcLcQXM": {
+          "VideoListLambdaVersionQCyoQtcJADoXLnHx65fUxrYnqoTinvxUoYtkujos": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "VideoListLambdaFunction"
+              },
+              "CodeSha256": "IqG3r9MKmI6IXwY3As3O0cCdalcYF75RTXuIIpD2LFE="
+            }
+          },
+          "WorkListLambdaVersionYdY7pbY6FUAoSl3XCfDYXBXyZByLQX3OGW8a3n00E": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "WorkListLambdaFunction"
+              },
+              "CodeSha256": "IqG3r9MKmI6IXwY3As3O0cCdalcYF75RTXuIIpD2LFE="
+            }
+          },
+          "CreateLambdaVersion6GmaLDQ6w3KhkN9SrkH4HCAYEzv0r7ACjrNHMER8": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateLambdaFunction"
               },
-              "CodeSha256": "YAC/uZpoQfBVxkFAchGpHBLzbnlhAzrFgQBcjZQ0mBA="
+              "CodeSha256": "IqG3r9MKmI6IXwY3As3O0cCdalcYF75RTXuIIpD2LFE="
             }
           },
           "ApiGatewayRestApi": {
@@ -384,6 +476,60 @@
                 "Ref": "ApiGatewayResourceClasslist"
               },
               "PathPart": "{name}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceVideolist": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "videoList",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceVideolistLessonidVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceVideolist"
+              },
+              "PathPart": "{lessonId}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceWorklist": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "workList",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceWorklistLessonidVar": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceWorklist"
+              },
+              "PathPart": "{lessonId}",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -608,7 +754,93 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1617985158351": {
+          "ApiGatewayMethodVideolistLessonidVarGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceVideolistLessonidVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "VideoListLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodWorklistLessonidVarGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceWorklistLessonidVar"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "WorkListLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1618066632537": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -621,7 +853,9 @@
               "ApiGatewayMethodLoginOptions",
               "ApiGatewayMethodRegisterPost",
               "ApiGatewayMethodLoginPost",
-              "ApiGatewayMethodClasslistNameVarGet"
+              "ApiGatewayMethodClasslistNameVarGet",
+              "ApiGatewayMethodVideolistLessonidVarGet",
+              "ApiGatewayMethodWorklistLessonidVarGet"
             ]
           },
           "CreateLambdaPermissionApiGateway": {
@@ -735,6 +969,80 @@
               }
             }
           },
+          "VideoListLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "VideoListLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "WorkListLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "WorkListLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
           "UsersDynamoDbTable": {
             "Type": "AWS::DynamoDB::Table",
             "DeletionPolicy": "Retain",
@@ -768,19 +1076,31 @@
           "LoginLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "LoginLambdaVersionhnabt55pBnOhGLLziBdgaPX8MTtReJMXf8SngPUn0"
+              "Ref": "LoginLambdaVersion7Rl7zFtR9KVWeUzhYbcIDd4lCZO0JWD7Yc9zfH5Kqs"
             }
           },
           "ClassListLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ClassListLambdaVersion2DAZSpWxEm5qAzie9W13GlOryoP0yasTvlLG2MsSw"
+              "Ref": "ClassListLambdaVersioneYFkTBVY61Hu2BReB0Bt0zO37UJit8oJGb08I7zvkY"
+            }
+          },
+          "VideoListLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "VideoListLambdaVersionQCyoQtcJADoXLnHx65fUxrYnqoTinvxUoYtkujos"
+            }
+          },
+          "WorkListLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "WorkListLambdaVersionYdY7pbY6FUAoSl3XCfDYXBXyZByLQX3OGW8a3n00E"
             }
           },
           "CreateLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateLambdaVersion8unDQZuPtV2e4WhMyju7p7uF8lliXC0dqrkcLcQXM"
+              "Ref": "CreateLambdaVersion6GmaLDQ6w3KhkN9SrkH4HCAYEzv0r7ACjrNHMER8"
             }
           },
           "ServiceEndpoint": {
@@ -933,7 +1253,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "CreateLambdaVersion8unDQZuPtV2e4WhMyju7p7uF8lliXC0dqrkcLcQXM"
+        "versionLogicalId": "CreateLambdaVersion6GmaLDQ6w3KhkN9SrkH4HCAYEzv0r7ACjrNHMER8"
       },
       "login": {
         "handler": "login.login",
@@ -971,7 +1291,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "LoginLambdaVersionhnabt55pBnOhGLLziBdgaPX8MTtReJMXf8SngPUn0"
+        "versionLogicalId": "LoginLambdaVersion7Rl7zFtR9KVWeUzhYbcIDd4lCZO0JWD7Yc9zfH5Kqs"
       },
       "classList": {
         "handler": "classDetails.classList",
@@ -990,7 +1310,45 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "ClassListLambdaVersion2DAZSpWxEm5qAzie9W13GlOryoP0yasTvlLG2MsSw"
+        "versionLogicalId": "ClassListLambdaVersioneYFkTBVY61Hu2BReB0Bt0zO37UJit8oJGb08I7zvkY"
+      },
+      "videoList": {
+        "handler": "videos.videoList",
+        "events": [
+          {
+            "http": {
+              "path": "videoList/{lessonId}",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "Issschool-dev-videoList",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs14.x",
+        "vpc": {},
+        "versionLogicalId": "VideoListLambdaVersionQCyoQtcJADoXLnHx65fUxrYnqoTinvxUoYtkujos"
+      },
+      "workList": {
+        "handler": "videos.workList",
+        "events": [
+          {
+            "http": {
+              "path": "workList/{lessonId}",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "Issschool-dev-workList",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs14.x",
+        "vpc": {},
+        "versionLogicalId": "WorkListLambdaVersionYdY7pbY6FUAoSl3XCfDYXBXyZByLQX3OGW8a3n00E"
       }
     },
     "resources": {
@@ -1043,10 +1401,10 @@
       }
     },
     "isDashboardMonitoringPreconfigured": false,
-    "artifact": "D:\\apps\\react-native\\backend\\.serverless\\Issschool.zip"
+    "artifact": "D:\\apps\\Issschool\\backend\\.serverless\\Issschool.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/Issschool/dev/1617985160795-2021-04-09T16:19:20.795Z",
+    "artifactDirectoryName": "serverless/Issschool/dev/1618066635747-2021-04-10T14:57:15.747Z",
     "artifact": "Issschool.zip"
   }
 }

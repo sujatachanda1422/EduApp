@@ -18,12 +18,12 @@ export default function SubjectCategory({route, navigation}) {
   const onSubjectClick = (item) => {
     navigation.navigate('HomeComp', {
       screen: 'Lesson',
+      params: {
+        lessons: item.lessons,
+        name: item.name,
+      },
     });
   };
-
-  // useEffect(() => {
-  //   console.log('Prop = ', subCategory);
-  // }, []);
 
   return (
     <View style={styles.container}>

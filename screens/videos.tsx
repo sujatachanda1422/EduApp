@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,39 +7,53 @@ import {
   Image,
   Text,
 } from 'react-native';
-import * as videos from '../data/videos.json';
 
 const video = require('../images/video.png');
 
-export default function Videos({navigation}) {
-  const register = () => {};
-
-  const onSubjectClick = () => {
-    navigation.navigate('HomeComp', {
-      screen: 'Login',
-    });
+export default function Videos({navigation, videoList}) {
+  const onSubjectClick = item => {
+    if (item.type === 'video') {
+      navigation.navigate('HomeComp', {
+        screen: 'VideoDetails',
+        params: {
+          videoDetails: item,
+        },
+      });
+    } else {
+      navigation.navigate('HomeComp', {
+        screen: 'Scorm',
+        params: {
+          videoDetails: item,
+        },
+      });
+    }
   };
+
+  // useEffect(() => {
+  //   console.log("Props == ", videoList);
+  // }, [videoList]);
 
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
-        <FlatList
-          data={videos.list}
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={styles.listContainer}
-          renderItem={({item}) => {
-            return (
-              <TouchableOpacity
-                activeOpacity={0.9}
-                style={styles.item}
-                // onPress={() => onSubjectClick(item)}
-              >
-                <Image source={video} style={styles.videoImg}></Image>
-                <Text style={styles.itemText}>{item.name}</Text>
-              </TouchableOpacity>
-            );
-          }}
-        />
+        {videoList && (
+          <FlatList
+            data={videoList}
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={styles.listContainer}
+            renderItem={({item}) => {
+              return (
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  style={styles.item}
+                  onPress={() => onSubjectClick(item)}>
+                  <Image source={video} style={styles.videoImg}></Image>
+                  <Text style={styles.itemText}>{item.name}</Text>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        )}
       </View>
     </View>
   );

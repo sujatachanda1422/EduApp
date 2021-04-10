@@ -1,32 +1,34 @@
-import React from 'react';
-import {
-  StyleSheet,
-  View,
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-  ImageBackground,
-  Image,
-  Alert,
-  Text,
-  BackHandler,
-} from 'react-native';
-import * as lessons from '../data/lesson.json';
-// const image = require("../images/login.jpg");
+import React, {useEffect} from 'react';
+import {StyleSheet, View, FlatList, TouchableOpacity, Text} from 'react-native';
 
-export default function Lesson({navigation}) {
-  const register = () => {};
+export default function Lesson({route, navigation}) {
+  const {name, lessons} = route.params;
 
   const onLessonClick = (item) => {
     navigation.navigate('HomeComp', {
       screen: 'LessonDetails',
+      params: {
+        lessonId: item.id,
+      },
     });
   };
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => {
+        return (
+          <View>
+            <Text style={{fontSize: 22, color: '#fff'}}>{name}</Text>
+          </View>
+        );
+      },
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={lessons.list}
+        data={lessons}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.listContainer}
         renderItem={({item, index}) => {
@@ -38,7 +40,7 @@ export default function Lesson({navigation}) {
               <Text style={styles.itemIndex}>{index + 1}</Text>
               <View>
                 <Text style={styles.itemText}>{item.name}</Text>
-                <Text style={styles.itemTextDesc}>{item.desc}</Text>
+                {/* <Text style={styles.itemTextDesc}>{item.desc}</Text> */}
               </View>
             </TouchableOpacity>
           );
@@ -67,6 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 7,
     flexDirection: 'row',
+
   },
   itemIndex: {
     color: '#a468b5',
@@ -84,12 +87,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   itemText: {
-    marginTop: 8,
+    marginTop: 18,
     fontSize: 18,
   },
   itemTextDesc: {
     marginTop: 5,
     fontSize: 14,
-    color: 'green'
+    color: 'green',
   },
 });

@@ -53,6 +53,18 @@ functions:
       - http:
           path: classList/{name}
           method: get
+  videoList:
+    handler: videos.videoList
+    events:
+      - http:
+          path: videoList/{lessonId}
+          method: get
+  workList:
+    handler: videos.workList
+    events:
+      - http:
+          path: workList/{lessonId}
+          method: get
 
 resources:
   Resources:

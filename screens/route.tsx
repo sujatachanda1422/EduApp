@@ -7,7 +7,8 @@ import Dashboard from './dashboard';
 import Role from './role';
 import Lesson from './lesson';
 import LessonDetails from './lessonDetails';
-import WorklistDetails from './worklistDetails';
+import Scorm from './scorm';
+import VideoDetails from './videosDetails';
 import SubjectCategory from './subjectCategory';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
@@ -70,16 +71,20 @@ function HomeComp() {
         }}
       />
       <Stack.Screen
-        name="WorklistDetails"
-        component={WorklistDetails}
-        options={{
-          title: 'The Numbers Song',
-        }}
+        name="Scorm"
+        component={Scorm}
       />
       <Stack.Screen
         name="SubjectCategory"
         component={SubjectCategory}
-        options={({navigation}) => ({
+        options={() => ({
+          headerShown: false,
+        })}
+      />
+      <Stack.Screen
+        name="VideoDetails"
+        component={VideoDetails}
+        options={() => ({
           headerShown: false,
         })}
       />

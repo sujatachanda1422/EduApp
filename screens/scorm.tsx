@@ -1,25 +1,32 @@
-import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import React, {useEffect} from 'react';
+import {StyleSheet, View, Text} from 'react-native';
 import {WebView} from 'react-native-webview';
-// const image = require("../images/login.jpg");
 
-export default function WorklistDetails({navigation}) {
-  const register = () => {};
+export default function Scorm({navigation, route}) {
+  const {videoDetails} = route.params;
 
-  const onSubjectClick = () => {
-    navigation.navigate('HomeComp', {
-      screen: 'Login',
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => {
+        return (
+          <View>
+            <Text style={{fontSize: 22, color: '#fff'}}>
+              {videoDetails.name}
+            </Text>
+          </View>
+        );
+      },
     });
-  };
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
         <WebView
-          // style={{flex: 1}}
           originWhitelist={['*']}
           source={{
-            uri: 'https://issschool-scorm.s3.amazonaws.com/AlphabetWriting/story_html5.html',
+            uri:
+              'https://issschool-scorm.s3.amazonaws.com/AlphabetWriting/story_html5.html',
           }}
           style={{flex: 1.0}}
           javaScriptEnabled={true}
@@ -27,8 +34,8 @@ export default function WorklistDetails({navigation}) {
           domStorageEnabled={true}
           allowFileAccess={true}
           mediaPlaybackRequiresUserAction={false}
-          androidLayerType={'hardware'} 
-          mixedContentMode='always'
+          androidLayerType={'hardware'}
+          mixedContentMode="always"
         />
       </View>
     </View>

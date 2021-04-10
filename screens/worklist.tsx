@@ -1,10 +1,8 @@
 import React from 'react';
 import {StyleSheet, View, FlatList, TouchableOpacity, Text} from 'react-native';
-import * as worklist from '../data/worklist.json';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-// const image = require("../images/login.jpg");
 
-export default function Worklist({navigation}) {
+export default function Worklist({navigation, workListData}) {
   const register = () => {};
 
   const onSubjectClick = (item) => {
@@ -17,7 +15,7 @@ export default function Worklist({navigation}) {
     <View style={styles.container}>
       <View style={styles.wrapper}>
         <FlatList
-          data={worklist.list}
+          data={workListData}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.listContainer}
           renderItem={({item}) => {
