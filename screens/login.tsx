@@ -5,7 +5,6 @@ import {
   TextInput,
   Button,
   ActivityIndicator,
-  ImageBackground,
   Image,
   Alert,
   Text,
@@ -17,7 +16,7 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import {http} from '../services/http';
-import SplashScreen from 'react-native-splash-screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const logo = require('../images/bee.png');
 const appName = require('../images/app-name.png');
@@ -28,23 +27,27 @@ export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
 
-  useEffect(() => {
-    SplashScreen.hide();
-  }, []);
+  const setLoginInStore = async data => {
+    console.log('Data = ', data);
+
+    const jsonValue = JSON.stringify(data);
+    await AsyncStorage.setItem('userData', jsonValue);
+
+    navigation.navigate('HomeComp', {
+      screen: 'Dashboard',
+    });
+  };
 
   const facebookLogin = () => {
     LoginManager.logInWithPermissions(['public_profile']).then(
-      (result) => {
+      result => {
         if (result.isCancelled) {
           console.log('Login cancelled');
         } else {
-          console.log('Login success with permissions:');
-          navigation.navigate('HomeComp', {
-            screen: 'Dashboard',
-          });
+          setLoginInStore(result);
         }
       },
-      (error) => {
+      error => {
         console.log('Login fail with error: ', error);
       },
     );
@@ -54,17 +57,12 @@ export default function Login({navigation}) {
     try {
       await GoogleSignin.configure();
       const userInfo = await GoogleSignin.signIn();
-      console.log('User = ', userInfo);
-      navigation.navigate('HomeComp', {
-        screen: 'Dashboard',
-      });
+      setLoginInStore(userInfo);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        // user cancelled the login flow
         console.log('Login cancelled');
       } else {
-        // some other error happened
-        console.log('Login error = ', error);
+        console.log('Login error = ', JSON.stringify(error));
       }
     }
   };
@@ -76,26 +74,18 @@ export default function Login({navigation}) {
   };
 
   const userLogin = () => {
-    // navigation.navigate('HomeComp', {
-    //   screen: 'Dashboard',
-    // });
-
-    // return;
     http
       .post(
         'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/login',
         {email, pwd},
       )
-      .then((response) => response.json())
-      .then((res) => {
-        console.log('Data = ', res);
+      .then(response => response.json())
+      .then(res => {
         if (res.data) {
-          navigation.navigate('HomeComp', {
-            screen: 'Dashboard',
-          });
+          setLoginInStore(res.data);
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
       });
   };
@@ -112,7 +102,7 @@ export default function Login({navigation}) {
               placeholder="Username"
               placeholderTextColor="#fff"
               value={email}
-              onChangeText={(email) => setEmail(email)}
+              onChangeText={email => setEmail(email)}
             />
           </View>
           <View style={styles.inputContainer}>
@@ -123,7 +113,7 @@ export default function Login({navigation}) {
               secureTextEntry={true}
               placeholderTextColor="#fff"
               value={pwd}
-              onChangeText={(pwd) => setPwd(pwd)}
+              onChangeText={pwd => setPwd(pwd)}
             />
           </View>
           <View style={{marginTop: 10}}>

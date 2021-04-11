@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -6,24 +6,53 @@ import {
   TouchableOpacity,
   Image,
   Text,
+  ActivityIndicator,
   BackHandler,
 } from 'react-native';
 import * as Images from '../data/images';
 import {http} from '../services/http';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useFocusEffect} from '@react-navigation/native';
 
-let user = require('../images/user.jpg');
+let userUrl = require('../images/user.png');
 let shadow = require('../images/shadow.png');
 
 export default function Dashboard({navigation}) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState({});
   const [subjects, setSubjects] = useState([]);
 
-  useEffect(() => {
-    getSubjectsList();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+      getSubjectsList();
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
+      };
+    }, []),
+  );
+
+  const handleBackButton = () => {
+    BackHandler.exitApp();
+  };
 
   const name = 'kg';
 
-  const getSubjectsList = () => {
+  const getSubjectsList = async () => {
+    const data = JSON.parse(await AsyncStorage.getItem('userData'));
+    setUser(data);
+
+    const subjectsData = JSON.parse(await AsyncStorage.getItem('subjects'));
+    setSubjects(subjectsData);
+
+    if (subjectsData) {
+      return;
+    }
+
+    setIsLoading(true);
+
     http
       .get(
         'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/classList/' +
@@ -31,10 +60,12 @@ export default function Dashboard({navigation}) {
       )
       .then(response => response.json())
       .then(res => {
-        console.log('Data = ', res);
+        // console.log('Data = ', res);
 
         if (res.subjects) {
+          setIsLoading(false);
           setSubjects(res.subjects);
+          AsyncStorage.setItem('subjects', JSON.stringify(res.subjects));
         }
       })
       .catch(error => {
@@ -43,9 +74,6 @@ export default function Dashboard({navigation}) {
   };
 
   const onSubjectClick = item => {
-    console.log('item = ', item);
-
-    // return;
     if (item.subCategory) {
       navigation.navigate('HomeComp', {
         screen: 'SubjectCategory',
@@ -67,11 +95,22 @@ export default function Dashboard({navigation}) {
 
   return (
     <View style={styles.container}>
+      {isLoading && (
+        <View style={styles.preloader}>
+          <ActivityIndicator size="large" color="#9E9E9E" />
+        </View>
+      )}
+
+      <TouchableOpacity onPress={() => navigation.openDrawer()}>
+        <MaterialCommunityIcons name="menu" size={34} color="grey" />
+      </TouchableOpacity>
+
       <View style={styles.imageWrapper}>
-        <Image source={user} style={styles.userImg}></Image>
-        <Text style={styles.userName}>Suman Sinha</Text>
+        <Image source={userUrl} style={styles.userImg}></Image>
+        <Text style={styles.userName}>{user.name}</Text>
         <Text style={styles.class}>Kindergarten</Text>
       </View>
+
       <View style={styles.wrapper}>
         <FlatList
           data={subjects}
@@ -106,6 +145,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
+    backgroundColor: '#f7f7f7'
   },
   wrapper: {
     flex: 1,
@@ -157,7 +197,7 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     justifyContent: 'center',
-    marginVertical: 50,
+    marginVertical: 20,
     alignItems: 'center',
   },
   userImg: {
@@ -173,6 +213,17 @@ const styles = StyleSheet.create({
   },
   class: {
     fontSize: 16,
-    marginTop: 5,
+    marginBottom: 15,
+  },
+  preloader: {
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0000007d',
+    zIndex: 1,
   },
 });

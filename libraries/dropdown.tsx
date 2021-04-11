@@ -62,7 +62,7 @@ const DropDown = forwardRef<TouchableWithoutFeedback, DropDownPropsInterface>(
     };
 
     useEffect(() => {
-      const _label = list.find((_) => _.value === value)?.label;
+      const _label = list.find(_ => _.value === value)?.label;
       if (_label) {
         setDisplayValue(_label);
       }
@@ -79,11 +79,12 @@ const DropDown = forwardRef<TouchableWithoutFeedback, DropDownPropsInterface>(
               <TextInput
                 value={displayValue}
                 mode={mode}
+                style={{height: 50, backgroundColor: '#ade0f2'}}
                 label={label}
                 placeholder={placeholder}
                 pointerEvents={'none'}
                 theme={theme}
-                {...inputProps}
+                right={<TextInput.Icon name={'menu-down'} />}
               />
             </View>
           </TouchableRipple>

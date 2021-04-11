@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ActivityIndicator, Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Videos from './videos';
 import Worklist from './worklist';
@@ -8,17 +8,30 @@ import {http} from '../services/http';
 
 const Tab = createBottomTabNavigator();
 
-export default function LessonDetails({route}) {
-  const {lessonId} = route.params;
+export default function LessonDetails({route, navigation}) {
+  const {lessonId, lessonName} = route.params;
   const [videos, setVideos] = useState([]);
   const [workList, setWorkList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => {
+        return (
+          <View>
+            <Text style={{fontSize: 22, color: '#fff'}}>{lessonName}</Text>
+          </View>
+        );
+      },
+    });
+
     getVideoList();
     getWorkList();
   }, []);
 
   const getVideoList = () => {
+    setIsLoading(true);
+
     http
       .get(
         'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/videoList/' +
@@ -28,6 +41,7 @@ export default function LessonDetails({route}) {
       .then(res => {
         if (res.videos) {
           setVideos(res.videos);
+          setIsLoading(false);
         }
       })
       .catch(error => {
@@ -54,6 +68,12 @@ export default function LessonDetails({route}) {
 
   return (
     <View style={styles.container}>
+      {isLoading && (
+        <View style={styles.preloader}>
+          <ActivityIndicator size="large" color="#9E9E9E" />
+        </View>
+      )}
+
       <Tab.Navigator
         tabBarOptions={{
           style: {height: 60},
@@ -70,7 +90,8 @@ export default function LessonDetails({route}) {
                 size={size}
               />
             ),
-          }}/>
+          }}
+        />
         <Tab.Screen
           name="Worklist"
           children={props => <Worklist {...props} workListData={workList} />}
@@ -82,7 +103,8 @@ export default function LessonDetails({route}) {
                 size={size}
               />
             ),
-          }}/>
+          }}
+        />
       </Tab.Navigator>
     </View>
   );
@@ -94,5 +116,16 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
+  },
+  preloader: {
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#00000007',
+    zIndex: 1,
   },
 });

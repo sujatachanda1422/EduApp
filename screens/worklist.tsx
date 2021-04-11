@@ -1,14 +1,68 @@
 import React from 'react';
-import {StyleSheet, View, FlatList, TouchableOpacity, Text} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  PermissionsAndroid,
+  Alert,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import RNFetchBlob from 'rn-fetch-blob';
+const pdf_url =
+  'https://issschool-scorm.s3.amazonaws.com/worksheets/tracing-letters-f.pdf';
 
 export default function Worklist({navigation, workListData}) {
-  const register = () => {};
+  const onDownloadClick = item => {
+    try {
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Tracing letters worksheet',
+          message: 'storage_permission',
+        },
+      ).then(granted => {
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          //Once user grant the permission start downloading
+          console.log('Storage Permission Granted.');
+          downloadFile();
+        } else {
+          //If permission denied then show alert 'Storage Permission
+          ('Not Granted');
+          Alert.alert('storage_permission');
+        }
+      });
+    } catch (err) {
+      //To handle permission related issue
+      console.log('error', err);
+    }
+  };
 
-  const onSubjectClick = (item) => {
-    navigation.navigate('HomeComp', {
-      screen: 'WorklistDetails',
-    });
+  const downloadFile = () => {
+    const fileName = 'tracing-letters.pdf';
+    const destPath = RNFetchBlob.fs.dirs.DownloadDir + '/' + fileName;
+
+    let options = {
+      fileCache: true,
+      // path: destPath,
+      addAndroidDownloads: {
+        useDownloadManager: true,
+        notification: true,
+        description: 'File downloaded by download manager.',
+      },
+    };
+
+    RNFetchBlob.config(options)
+      .fetch('GET', pdf_url)
+      .then(res => {
+        // console.log('res -> ', JSON.stringify(res));
+        Alert.alert('Worksheet download');
+      })
+      .catch(err => {
+        Alert.alert('Worksheet download');
+        console.log('err -> ', err);
+      });
   };
 
   return (
@@ -23,8 +77,7 @@ export default function Worklist({navigation, workListData}) {
               <TouchableOpacity
                 activeOpacity={0.9}
                 style={styles.item}
-                onPress={() => onSubjectClick(item)}
-              >
+                onPress={() => onDownloadClick(item)}>
                 <View style={{flex: 1}}>
                   <Text style={styles.itemHeader}>{item.name}</Text>
                   <Text style={styles.itemText}>{item.name}</Text>
@@ -67,7 +120,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderRadius: 15,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   itemHeader: {
     color: 'violet',

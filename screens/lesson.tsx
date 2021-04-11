@@ -9,6 +9,7 @@ export default function Lesson({route, navigation}) {
       screen: 'LessonDetails',
       params: {
         lessonId: item.id,
+        lessonName: item.name,
       },
     });
   };

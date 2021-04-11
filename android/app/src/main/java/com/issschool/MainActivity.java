@@ -8,6 +8,7 @@ import com.facebook.react.ReactActivity;
 import org.devio.rn.splashscreen.SplashScreen;
 import android.os.Bundle;
 import com.brentvatne.react.ReactVideoPackage;
+import co.apptailor.googlesignin.RNGoogleSigninPackage; 
 
 public class MainActivity extends ReactActivity {
   @Override
@@ -28,7 +29,8 @@ public class MainActivity extends ReactActivity {
   protected List<ReactPackage> getPackages() {
       return Arrays.asList(
               new MainReactPackage(),
-              new ReactVideoPackage()
+              new ReactVideoPackage(),
+              new RNGoogleSigninPackage() 
       );
   }
 }
