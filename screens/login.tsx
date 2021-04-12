@@ -26,9 +26,10 @@ const user2 = require('../images/user2.png');
 export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const setLoginInStore = async data => {
-    console.log('Data = ', data);
+    // console.log('Data = ', data);
 
     const jsonValue = JSON.stringify(data);
     await AsyncStorage.setItem('userData', jsonValue);
@@ -74,6 +75,10 @@ export default function Login({navigation}) {
   };
 
   const userLogin = () => {
+    if (!email.trim() || !pwd.trim()) {
+      return;
+    }
+
     http
       .post(
         'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/login',
@@ -81,8 +86,12 @@ export default function Login({navigation}) {
       )
       .then(response => response.json())
       .then(res => {
-        if (res.data) {
+        console.log('login = ', res);
+
+        if (res.status === 200) {
           setLoginInStore(res.data);
+        } else if (res.status === 500 || res.status === 404) {
+          setErrorMsg(res.message);
         }
       })
       .catch(error => {
@@ -94,15 +103,24 @@ export default function Login({navigation}) {
     <View style={styles.container}>
       <View style={styles.overlay}>
         <Image source={appName} style={styles.appName}></Image>
+        {!!errorMsg.length && (
+          <View>
+            <Text style={styles.errorText}>{errorMsg}</Text>
+          </View>
+        )}
         <View style={{flex: 1}}>
           <View style={styles.inputContainer}>
             <Image source={user1} style={styles.userIcon}></Image>
+
             <TextInput
               style={styles.inputStyle}
               placeholder="Username"
               placeholderTextColor="#fff"
               value={email}
-              onChangeText={email => setEmail(email)}
+              onChangeText={email => {
+                setErrorMsg('');
+                setEmail(email);
+              }}
             />
           </View>
           <View style={styles.inputContainer}>
@@ -113,7 +131,10 @@ export default function Login({navigation}) {
               secureTextEntry={true}
               placeholderTextColor="#fff"
               value={pwd}
-              onChangeText={pwd => setPwd(pwd)}
+              onChangeText={pwd => {
+                setErrorMsg('');
+                setPwd(pwd);
+              }}
             />
           </View>
           <View style={{marginTop: 10}}>
@@ -219,5 +240,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 15,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 18,
+    fontWeight: 'bold',
+    top: -40,
+    left: '33%',
+    position: 'absolute',
   },
 });

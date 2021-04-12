@@ -38,16 +38,16 @@ export default function Dashboard({navigation}) {
     BackHandler.exitApp();
   };
 
-  const name = 'kg';
-
   const getSubjectsList = async () => {
     const data = JSON.parse(await AsyncStorage.getItem('userData'));
     setUser(data);
 
-    const subjectsData = JSON.parse(await AsyncStorage.getItem('subjects'));
-    setSubjects(subjectsData);
+    const subjectsStoreData = await AsyncStorage.getItem('subjects');
 
-    if (subjectsData) {
+    if (subjectsStoreData) {
+      const subjectsData = JSON.parse(subjectsStoreData);
+      setSubjects(subjectsData);
+
       return;
     }
 
@@ -56,11 +56,11 @@ export default function Dashboard({navigation}) {
     http
       .get(
         'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/classList/' +
-          name,
+        data.class,
       )
       .then(response => response.json())
       .then(res => {
-        // console.log('Data = ', res);
+        console.log('classes = ', res);
 
         if (res.subjects) {
           setIsLoading(false);
@@ -69,6 +69,8 @@ export default function Dashboard({navigation}) {
         }
       })
       .catch(error => {
+        console.log('classes error = ', error);
+        setIsLoading(false);
         console.error(error);
       });
   };
@@ -108,7 +110,7 @@ export default function Dashboard({navigation}) {
       <View style={styles.imageWrapper}>
         <Image source={userUrl} style={styles.userImg}></Image>
         <Text style={styles.userName}>{user.name}</Text>
-        <Text style={styles.class}>Kindergarten</Text>
+        <Text style={styles.class}>{user.class}</Text>
       </View>
 
       <View style={styles.wrapper}>
@@ -149,21 +151,6 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flex: 1,
-  },
-  headerStyle: {
-    fontSize: 42,
-    marginLeft: 110,
-  },
-  listContainer: {
-    // paddingTop: 20,
-  },
-  image: {
-    height: 260,
-    justifyContent: 'center',
-    overflow: 'hidden',
-    borderBottomLeftRadius: 200,
-    borderBottomRightRadius: 200,
-    transform: [{scaleX: 1.4}],
   },
   item: {
     height: 150,
@@ -208,12 +195,14 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   userName: {
-    fontSize: 22,
+    fontSize: 23,
     marginTop: 20,
   },
   class: {
-    fontSize: 16,
+    fontSize: 15,
+    marginTop: 5,
     marginBottom: 15,
+    textTransform: 'uppercase'
   },
   preloader: {
     left: 0,

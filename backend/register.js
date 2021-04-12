@@ -13,42 +13,74 @@ module.exports.signUp = (event, context, callback) => {
     const email = requestBody.email;
     const pwd = requestBody.pwd;
 
+    var params = {
+        TableName: "users",
+        Key: {
+            email
+        }
+    };
+
     if (name.trim() === '' || email.trim() === '' || pwd.trim() === '') {
         console.error('Validation Failed');
         callback(new Error('Couldn\'t submit user because of validation errors.'));
         return;
     }
 
-    submitUser(userInfo(requestBody))
-        .then(res => {
-            console.log('Registered user', res);
-            callback(null, {
-                statusCode: 200,
-                body: JSON.stringify({
-                    message: `Sucessfully submitted user with email ${email}`,
-                    user: res
-                })
-            });
-        })
-        .catch(err => {
-            console.log(err);
-            callback(null, {
-                statusCode: 500,
-                body: JSON.stringify({
-                    message: `Unable to submit user with email ${email}`
-                })
-            })
-        });
+    dynamoDb.get(params, function(err, data) {
+        let response;
+
+        if (err) {
+            response = {
+                body: JSON.stringify({ status: 501, message: "Unable to read item." })
+            };
+
+            callback(null, response);
+        } else {
+            response = JSON.stringify(data, null, 2);
+
+            if (response === "{}") {
+                addUser(requestBody).then(res => {
+                    callback(null, {
+                        body: JSON.stringify({
+                            status: 200,
+                            message: "Sucessfully submitted user with email",
+                            user: res
+                        })
+                    });
+                }).catch(err => {
+                    callback(null, {
+                        body: JSON.stringify({
+                            status: 500,
+                            message: "Unable to submit user with email"
+                        })
+                    });
+                });
+            } else {
+                response = {
+                    body: JSON.stringify({ status: 500, message: "User with email already exists." })
+                };
+
+                callback(null, response);
+            };
+        }
+    });
+
 };
 
+const addUser = (requestBody) => {
+    return submitUser(userInfo(requestBody))
+        .then(res => requestBody)
+        .catch(err => err);
+}
 
 const submitUser = user => {
     const userInfo = {
-        TableName: process.env.USERS_TABLE,
+        TableName: 'users',
         Item: user
     };
+
     return dynamoDb.put(userInfo).promise()
-        .then(res => user);
+        .then(res => user).catch(err => err);
 };
 
 const userInfo = (requestBody) => {
@@ -60,5 +92,7 @@ const userInfo = (requestBody) => {
         name: requestBody.name,
         pwd: requestBody.pwd,
         updatedAt: timestamp,
+        class: requestBody.class,
+        role: requestBody.role
     };
 };

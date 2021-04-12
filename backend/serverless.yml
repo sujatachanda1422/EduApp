@@ -21,7 +21,7 @@ provider:
   package:
   individually: true
   environment:
-      USERS_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+      USERS_TABLE: 'users'
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -83,4 +83,4 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.USERS_TABLE}
+        TableName: 'users'
