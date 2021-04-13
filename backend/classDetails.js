@@ -8,6 +8,27 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.classList = (event, context, callback) => {
     const params = {
+        TableName: 'classes'
+    };
+
+    dynamoDb.scan(params).promise()
+        .then(result => {
+            let response;
+
+            response = {
+                body: JSON.stringify(result.Items)
+            };
+            callback(null, response);
+        })
+        .catch(error => {
+            console.error("Error in data", params);
+            callback(null);
+            return;
+        });
+}
+
+module.exports.classDetails = (event, context, callback) => {
+    const params = {
         TableName: 'classes',
         Key: {
             name: event.pathParameters.name

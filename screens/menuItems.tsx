@@ -12,8 +12,7 @@ export default function MenuItems({navigation}) {
       {
         text: 'Yes',
         onPress: () => {
-          AsyncStorage.removeItem('userData');
-          AsyncStorage.removeItem('subjects');
+          AsyncStorage.clear();
 
           navigation.navigate('HomeComp', {
             screen: 'Login',

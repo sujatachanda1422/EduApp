@@ -9,26 +9,35 @@ import {
   ActivityIndicator,
   BackHandler,
 } from 'react-native';
+import * as Images from '../data/images';
 import {http} from '../services/http';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useFocusEffect} from '@react-navigation/native';
 
 let userUrl = require('../images/user.png');
+let shadow = require('../images/shadow.png');
 
-export default function Dashboard({navigation}) {
+export default function SubjectList({navigation, route}) {
+  const {className} = route.params;
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState({});
-  const [classes, setClasses] = useState([]);
+  const [subjects, setSubjects] = useState([]);
 
   useFocusEffect(
     useCallback(() => {
-      BackHandler.addEventListener('hardwareBackPress', handleBackButton);
       getSubjectsList();
 
-      return () => {
-        BackHandler.removeEventListener('hardwareBackPress', handleBackButton);
-      };
+      if (user.role === 'student') {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+
+        return () => {
+          BackHandler.removeEventListener(
+            'hardwareBackPress',
+            handleBackButton,
+          );
+        };
+      }
     }, []),
   );
 
@@ -40,21 +49,11 @@ export default function Dashboard({navigation}) {
     const data = JSON.parse(await AsyncStorage.getItem('userData'));
     setUser(data);
 
-    if (data.role === 'student') {
-      navigation.navigate('HomeComp', {
-        screen: 'SubjectList',
-        params: {
-          className: data.class,
-        },
-      });
+    const subjectsStoreData = await AsyncStorage.getItem('subjects');
 
-      return;
-    }
-
-    const classData = JSON.parse(await AsyncStorage.getItem('classList'));
-
-    if (classData) {
-      setClasses(classData);
+    if (subjectsStoreData) {
+      const subjectsData = JSON.parse(subjectsStoreData);
+      setSubjects(subjectsData);
 
       return;
     }
@@ -63,16 +62,17 @@ export default function Dashboard({navigation}) {
 
     http
       .get(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/classList',
+        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/classDetails/' +
+          className,
       )
       .then(response => response.json())
-      .then(async res => {
+      .then(res => {
         console.log('classes = ', res);
-        setIsLoading(false);
 
-        if (res.length) {
-          setClasses(res);
-          await AsyncStorage.setItem('classList', JSON.stringify(res));
+        if (res.subjects) {
+          setIsLoading(false);
+          setSubjects(res.subjects);
+          AsyncStorage.setItem('subjects', JSON.stringify(res.subjects));
         }
       })
       .catch(error => {
@@ -82,15 +82,24 @@ export default function Dashboard({navigation}) {
       });
   };
 
-  const onClassClick = async item => {
-    await AsyncStorage.setItem('subjects', JSON.stringify(item.subjects));
-
-    navigation.navigate('HomeComp', {
-      screen: 'SubjectList',
-      params: {
-        className: item.name,
-      },
-    });
+  const onSubjectClick = item => {
+    if (item.subCategory) {
+      navigation.navigate('HomeComp', {
+        screen: 'SubjectCategory',
+        params: {
+          subCategory: item.subCategory,
+          name: item.name,
+        },
+      });
+    } else {
+      navigation.navigate('HomeComp', {
+        screen: 'Lesson',
+        params: {
+          lessons: item.lessons,
+          name: item.name,
+        },
+      });
+    }
   };
 
   return (
@@ -101,19 +110,35 @@ export default function Dashboard({navigation}) {
         </View>
       )}
 
-      <TouchableOpacity onPress={() => navigation.openDrawer()}>
-        <MaterialCommunityIcons name="menu" size={34} color="grey" />
-      </TouchableOpacity>
+      {user.role === 'student' && (
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+          <MaterialCommunityIcons name="menu" size={34} color="grey" />
+        </TouchableOpacity>
+      )}
 
-      <View style={styles.imageWrapper}>
-        <Image source={userUrl} style={styles.userImg}></Image>
-        <Text style={styles.userName}>{user.name}</Text>
-        <Text style={styles.class}>{user.role}</Text>
-      </View>
+      {user.role === 'teacher' && (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <MaterialCommunityIcons name="chevron-left" size={34} color="grey" />
+        </TouchableOpacity>
+      )}
+
+      {user.role === 'student' && (
+        <View style={styles.imageWrapper}>
+          <Image source={userUrl} style={styles.userImg}></Image>
+          <Text style={styles.userName}>{user.name}</Text>
+          <Text style={styles.class}>{className}</Text>
+        </View>
+      )}
+
+      {user.role === 'teacher' && (
+        <View>
+          <Text style={styles.classNameStyle}>{className}</Text>
+        </View>
+      )}
 
       <View style={styles.wrapper}>
         <FlatList
-          data={classes}
+          data={subjects}
           keyExtractor={(item, index) => index.toString()}
           horizontal={false}
           numColumns={2}
@@ -123,14 +148,14 @@ export default function Dashboard({navigation}) {
               <TouchableOpacity
                 activeOpacity={0.9}
                 style={styles.item}
-                onPress={() => onClassClick(item)}>
-                {/* <View style={styles.listIconWrapper}>
+                onPress={() => onSubjectClick(item)}>
+                <View style={styles.listIconWrapper}>
                   <Image source={shadow} style={styles.shadowImg}></Image>
                   <Image
                     source={Images[item.name.toLowerCase()]}
                     style={styles.listIcon}></Image>
-                </View> */}
-                <Text style={styles.itemText}>{item.displayName}</Text>
+                </View>
+                <Text style={styles.itemText}>{item.name}</Text>
               </TouchableOpacity>
             );
           }}
@@ -200,6 +225,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 5,
     marginBottom: 15,
+    textTransform: 'uppercase',
+  },
+  classNameStyle: {
+    fontSize: 20,
+    margin: 40,
+    alignSelf: 'center',
     textTransform: 'uppercase',
   },
   preloader: {

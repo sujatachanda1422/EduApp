@@ -47,11 +47,17 @@ functions:
           path: login
           method: post
           cors: true
+  classDetails:
+    handler: classDetails.classDetails
+    events:
+      - http:
+          path: classDetails/{name}
+          method: get
   classList:
     handler: classDetails.classList
     events:
       - http:
-          path: classList/{name}
+          path: classList
           method: get
   videoList:
     handler: videos.videoList

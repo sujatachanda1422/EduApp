@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Login from './login';
 import Register from './register';
 import Dashboard from './dashboard';
+import SubjectList from './subjectList';
 import Role from './role';
 import Lesson from './lesson';
 import LessonDetails from './lessonDetails';
@@ -94,6 +95,13 @@ function HomeComp() {
           <Stack.Screen
             name="Register"
             component={Register}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="SubjectList"
+            component={SubjectList}
             options={{
               headerShown: false,
             }}
