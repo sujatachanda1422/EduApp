@@ -18,6 +18,7 @@ import {
 import {http} from '../services/http';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// const IMEI = require('react-native-imei');
 const logo = require('../images/bee.png');
 const appName = require('../images/app-name.png');
 const user1 = require('../images/user1.png');
@@ -27,6 +28,13 @@ export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [imei, setImei] = useState('');
+
+  // useEffect(() => {
+  //   IMEI.getImei().then(imeiList => {
+  //     console.log('imeiList', imeiList);
+  //   });
+  // }, []);
 
   const setLoginInStore = async data => {
     // console.log('Data = ', data);

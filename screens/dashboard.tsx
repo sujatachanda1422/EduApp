@@ -15,6 +15,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useFocusEffect} from '@react-navigation/native';
 
 let userUrl = require('../images/user.png');
+let userShadow = require('../images/user-shadow.png');
 
 export default function Dashboard({navigation}) {
   const [isLoading, setIsLoading] = useState(false);
@@ -93,6 +94,10 @@ export default function Dashboard({navigation}) {
     });
   };
 
+  const checkIndexIsEven = n => {
+    return [0, 3].indexOf(n) > -1;
+  };
+
   return (
     <View style={styles.container}>
       {isLoading && (
@@ -106,6 +111,7 @@ export default function Dashboard({navigation}) {
       </TouchableOpacity>
 
       <View style={styles.imageWrapper}>
+        <Image source={userShadow} style={styles.userShadow}></Image>
         <Image source={userUrl} style={styles.userImg}></Image>
         <Text style={styles.userName}>{user.name}</Text>
         <Text style={styles.class}>{user.role}</Text>
@@ -113,25 +119,51 @@ export default function Dashboard({navigation}) {
 
       <View style={styles.wrapper}>
         <FlatList
-          data={classes}
           keyExtractor={(item, index) => index.toString()}
           horizontal={false}
           numColumns={2}
+          data={classes.sort((a, b) => a.order > b.order)}
           contentContainerStyle={styles.listContainer}
-          renderItem={({item}) => {
+          renderItem={({item, index}) => {
             return (
-              <TouchableOpacity
-                activeOpacity={0.9}
-                style={styles.item}
-                onPress={() => onClassClick(item)}>
-                {/* <View style={styles.listIconWrapper}>
-                  <Image source={shadow} style={styles.shadowImg}></Image>
-                  <Image
-                    source={Images[item.name.toLowerCase()]}
-                    style={styles.listIcon}></Image>
-                </View> */}
-                <Text style={styles.itemText}>{item.displayName}</Text>
-              </TouchableOpacity>
+              <>
+                {item.name !== user.class && (
+                  <View
+                    style={[
+                      styles.item,
+                      {
+                        backgroundColor: checkIndexIsEven(index)
+                          ? '#e9165b'
+                          : '#2dadb3',
+                      },
+                    ]}>
+                    <View style={styles.lockIconBkg}></View>
+                    <MaterialCommunityIcons
+                      name="lock"
+                      size={34}
+                      style={styles.lockIcon}
+                      color="#000"
+                    />
+                    <Text style={styles.itemText}>{item.displayName}</Text>
+                  </View>
+                )}
+
+                {item.name === user.class && (
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={[
+                      styles.item,
+                      {
+                        backgroundColor: checkIndexIsEven(index)
+                          ? '#e9165b'
+                          : '#2dadb3',
+                      },
+                    ]}
+                    onPress={() => onClassClick(item)}>
+                    <Text style={styles.itemText}>{item.displayName}</Text>
+                  </TouchableOpacity>
+                )}
+              </>
             );
           }}
         />
@@ -151,15 +183,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    height: 150,
-    elevation: 5,
+    height: 160,
+    elevation: 8,
     justifyContent: 'center',
     flex: 1,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 25,
     marginHorizontal: 10,
-    borderRadius: 6,
-    backgroundColor: '#fff',
+    borderRadius: 4,
+    backgroundColor: '#000',
+    position: 'relative',
   },
   listIcon: {
     width: 70,
@@ -169,6 +202,10 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 18,
+    textTransform: 'uppercase',
+    color: '#fff',
+    textAlign: 'center',
+    lineHeight: 28,
   },
   listIconWrapper: {
     backgroundColor: '#fff',
@@ -184,6 +221,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 20,
     alignItems: 'center',
+    position: 'relative',
   },
   userImg: {
     width: 100,
@@ -191,16 +229,38 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     overflow: 'hidden',
     resizeMode: 'contain',
+    //  position: 'absolute',
   },
   userName: {
     fontSize: 23,
     marginTop: 20,
+  },
+  userShadow: {
+    position: 'absolute',
+    width: 150,
+    height: 120,
+    top: -10,
   },
   class: {
     fontSize: 15,
     marginTop: 5,
     marginBottom: 15,
     textTransform: 'uppercase',
+  },
+  lockIconBkg: {
+    position: 'absolute',
+    opacity: 0.5,
+    backgroundColor: '#dcdcdc',
+    width: '100%',
+    height: '100%',
+    zIndex: 1,
+  },
+  lockIcon: {
+    position: 'absolute',
+    zIndex: 10,
+    opacity: 0.4,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   preloader: {
     left: 0,

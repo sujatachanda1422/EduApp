@@ -26,8 +26,8 @@ const roleList = [
 const classList = [
   {label: 'Play Group', value: 'playgroup'},
   {label: 'Nursery', value: 'nursery'},
-  {label: 'Lower KG', value: 'lkg'},
-  {label: 'Upper KG', value: 'ukg'},
+  {label: 'Kindergarten One', value: 'lkg'},
+  {label: 'Kindergarten Two', value: 'ukg'},
 ];
 const theme = {
   ...DefaultTheme,
@@ -61,7 +61,7 @@ export default function Register({navigation}) {
       case 'name':
         return !name.trim();
       case 'mobile':
-        return mobile.trim().length && mobile.length < 10;
+        return !mobile || mobile.trim().length && mobile.length < 10;
       case 'password':
         return !pwd.trim();
       case 'email':
@@ -112,12 +112,12 @@ export default function Register({navigation}) {
       !email.includes('@') ||
       pwd !== confirmPwd ||
       !role ||
+      !mobile ||
       !classSelected
     ) {
       return;
     }
 
-    console.log('param = ', param);
     setIsLoading(true);
 
     http
@@ -167,7 +167,7 @@ export default function Register({navigation}) {
               }}
             />
             <HelperText
-              style={{marginLeft: 10}}
+              style={{marginLeft: 10, marginTop: -5, marginBottom: 5}}
               type="error"
               visible={hasError('name')}>
               Please enter fullname
@@ -184,7 +184,7 @@ export default function Register({navigation}) {
               }}
             />
             <HelperText
-              style={{marginLeft: 10}}
+              style={{marginLeft: 10, marginTop: -5, marginBottom: 5}}
               type="error"
               visible={hasError('email')}>
               Email address is invalid!
@@ -193,7 +193,7 @@ export default function Register({navigation}) {
           <View>
             <TextInput
               style={styles.inputStyle}
-              placeholder="Mobile (Optional)"
+              placeholder="Mobile"
               keyboardType="numeric"
               value={mobile}
               onChangeText={mobile => {
@@ -203,7 +203,7 @@ export default function Register({navigation}) {
               maxLength={10}
             />
             <HelperText
-              style={{marginLeft: 10}}
+              style={{marginLeft: 10, marginTop: -5, marginBottom: 5}}
               type="error"
               visible={hasError('mobile')}>
               Mobile number is invalid!
@@ -226,7 +226,7 @@ export default function Register({navigation}) {
               }
             />
             <HelperText
-              style={{marginLeft: 10}}
+              style={{marginLeft: 10, marginTop: -5, marginBottom: 5}}
               type="error"
               visible={hasError('password')}>
               Please enter password
@@ -246,7 +246,7 @@ export default function Register({navigation}) {
               }
             />
             <HelperText
-              style={{marginLeft: 10}}
+              style={{marginLeft: 10, marginTop: -5, marginBottom: 5}}
               type="error"
               visible={matchPwd()}>
               Password does not match
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   overlay: {
     backgroundColor: '#fff',
     paddingHorizontal: 20,
-    paddingTop: 50,
+    paddingTop: 40,
     height: '100%',
   },
   inputStyle: {
@@ -333,22 +333,24 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     height: 46,
     fontSize: 15,
+    marginBottom: 5
   },
   image: {
     flex: 1,
     justifyContent: 'center',
   },
   loginText: {
-    marginTop: 30,
+    marginTop: 25,
     color: '#0c50ea',
     textAlign: 'center',
     fontSize: 16,
   },
   dropDown: {
     marginHorizontal: 20,
+    marginBottom: 5
   },
   logo: {
-    marginTop: 20,
+    marginTop: 15,
     width: 150,
     height: 150,
     alignSelf: 'center',
