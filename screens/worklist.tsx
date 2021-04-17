@@ -57,10 +57,10 @@ export default function Worklist({navigation, workListData}) {
       .fetch('GET', pdf_url)
       .then(res => {
         // console.log('res -> ', JSON.stringify(res));
-        Alert.alert('Worksheet download');
+        Alert.alert('Worksheet downloaded.');
       })
       .catch(err => {
-        Alert.alert('Worksheet download');
+        Alert.alert('Error.');
         console.log('err -> ', err);
       });
   };
