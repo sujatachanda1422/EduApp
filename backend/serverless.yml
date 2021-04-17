@@ -29,6 +29,7 @@ provider:
         - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
+        - dynamodb:DeleteItem
       Resource: '*'
 
 # The `functions` block defines what code to deploy
@@ -71,6 +72,19 @@ functions:
       - http:
           path: workList/{lessonId}
           method: get
+  addLoginHistory:
+    handler: loginHistory.addLoginHistory
+    events:
+      - http:
+          path: addLoginHistory
+          method: post
+  deleteLoginHistory:
+    handler: loginHistory.deleteLoginHistory
+    events:
+      - http:
+          path: deleteLoginHistory
+          method: delete
+          cors: true
 
 resources:
   Resources:
@@ -90,3 +104,19 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
         TableName: 'users'
+    LoginHistoryDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: email
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: email
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: 'login-history'

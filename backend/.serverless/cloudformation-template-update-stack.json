@@ -107,6 +107,18 @@
         "LogGroupName": "/aws/lambda/Issschool-dev-workList"
       }
     },
+    "AddLoginHistoryLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/Issschool-dev-addLoginHistory"
+      }
+    },
+    "DeleteLoginHistoryLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/Issschool-dev-deleteLoginHistory"
+      }
+    },
     "IamRoleLambdaExecution": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -170,7 +182,8 @@
                     "dynamodb:Query",
                     "dynamodb:Scan",
                     "dynamodb:GetItem",
-                    "dynamodb:PutItem"
+                    "dynamodb:PutItem",
+                    "dynamodb:DeleteItem"
                   ],
                   "Resource": "*"
                 }
@@ -201,7 +214,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/Issschool/dev/1618291063133-2021-04-13T05:17:43.133Z/Issschool.zip"
+          "S3Key": "serverless/Issschool/dev/1618668245549-2021-04-17T14:04:05.549Z/Issschool.zip"
         },
         "Handler": "register.signUp",
         "Runtime": "nodejs14.x",
@@ -231,7 +244,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/Issschool/dev/1618291063133-2021-04-13T05:17:43.133Z/Issschool.zip"
+          "S3Key": "serverless/Issschool/dev/1618668245549-2021-04-17T14:04:05.549Z/Issschool.zip"
         },
         "Handler": "login.login",
         "Runtime": "nodejs14.x",
@@ -261,7 +274,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/Issschool/dev/1618291063133-2021-04-13T05:17:43.133Z/Issschool.zip"
+          "S3Key": "serverless/Issschool/dev/1618668245549-2021-04-17T14:04:05.549Z/Issschool.zip"
         },
         "Handler": "classDetails.classDetails",
         "Runtime": "nodejs14.x",
@@ -291,7 +304,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/Issschool/dev/1618291063133-2021-04-13T05:17:43.133Z/Issschool.zip"
+          "S3Key": "serverless/Issschool/dev/1618668245549-2021-04-17T14:04:05.549Z/Issschool.zip"
         },
         "Handler": "classDetails.classList",
         "Runtime": "nodejs14.x",
@@ -321,7 +334,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/Issschool/dev/1618291063133-2021-04-13T05:17:43.133Z/Issschool.zip"
+          "S3Key": "serverless/Issschool/dev/1618668245549-2021-04-17T14:04:05.549Z/Issschool.zip"
         },
         "Handler": "videos.videoList",
         "Runtime": "nodejs14.x",
@@ -351,7 +364,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/Issschool/dev/1618291063133-2021-04-13T05:17:43.133Z/Issschool.zip"
+          "S3Key": "serverless/Issschool/dev/1618668245549-2021-04-17T14:04:05.549Z/Issschool.zip"
         },
         "Handler": "videos.workList",
         "Runtime": "nodejs14.x",
@@ -374,64 +387,144 @@
         "WorkListLogGroup"
       ]
     },
-    "LoginLambdaVersionLi3gtRxo4DFPntLbo747XHkOdzFKdGTmlGOsbVlpo": {
-      "Type": "AWS::Lambda::Version",
-      "DeletionPolicy": "Retain",
+    "AddLoginHistoryLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": {
-          "Ref": "LoginLambdaFunction"
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/Issschool/dev/1618668245549-2021-04-17T14:04:05.549Z/Issschool.zip"
         },
-        "CodeSha256": "i/IGG2xpYv59vb9jsZjbcchhIDZyM8G8qnBpQoeUC8A="
-      }
+        "Handler": "loginHistory.addLoginHistory",
+        "Runtime": "nodejs14.x",
+        "FunctionName": "Issschool-dev-addLoginHistory",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "USERS_TABLE": "users"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "AddLoginHistoryLogGroup"
+      ]
     },
-    "ClassDetailsLambdaVersion8ij3BMdECW14tGzitndjMKKiEgfYb7SEkf2xGJUwI": {
+    "DeleteLoginHistoryLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/Issschool/dev/1618668245549-2021-04-17T14:04:05.549Z/Issschool.zip"
+        },
+        "Handler": "loginHistory.deleteLoginHistory",
+        "Runtime": "nodejs14.x",
+        "FunctionName": "Issschool-dev-deleteLoginHistory",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "USERS_TABLE": "users"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "DeleteLoginHistoryLogGroup"
+      ]
+    },
+    "ClassDetailsLambdaVersion3E73SiQJbbn0PENWzZN0TZ3DIrCFT0gsRSc4u5VdQg": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ClassDetailsLambdaFunction"
         },
-        "CodeSha256": "i/IGG2xpYv59vb9jsZjbcchhIDZyM8G8qnBpQoeUC8A="
+        "CodeSha256": "czYYID7Te7JFGszGEire4cdnjeNOk/sP1J0yfw5BO88="
       }
     },
-    "ClassListLambdaVersionLDMvBghU2nBdqV7TmJzikEqpwVhcWnN43Xp0BruUpA": {
-      "Type": "AWS::Lambda::Version",
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "ClassListLambdaFunction"
-        },
-        "CodeSha256": "i/IGG2xpYv59vb9jsZjbcchhIDZyM8G8qnBpQoeUC8A="
-      }
-    },
-    "VideoListLambdaVersionijes6gnrTt7mMRqyPeAQi0M3h55OSmVwYQnpjIsRXc": {
-      "Type": "AWS::Lambda::Version",
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "VideoListLambdaFunction"
-        },
-        "CodeSha256": "i/IGG2xpYv59vb9jsZjbcchhIDZyM8G8qnBpQoeUC8A="
-      }
-    },
-    "WorkListLambdaVersion5pCx8ho6Hx2HI6UzNOBeLCIfwTKS7ykVa3YLrZ6sLc": {
-      "Type": "AWS::Lambda::Version",
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "WorkListLambdaFunction"
-        },
-        "CodeSha256": "i/IGG2xpYv59vb9jsZjbcchhIDZyM8G8qnBpQoeUC8A="
-      }
-    },
-    "CreateLambdaVersion40cXX0eBOc402vVk6QZ3EbY5OkyrEPDNl5Qot0YPs": {
+    "CreateLambdaVersionaef7MMpaVLIn48UaMQyRcYPGqwe4Iq8BK57Ob2cs": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "CreateLambdaFunction"
         },
-        "CodeSha256": "i/IGG2xpYv59vb9jsZjbcchhIDZyM8G8qnBpQoeUC8A="
+        "CodeSha256": "czYYID7Te7JFGszGEire4cdnjeNOk/sP1J0yfw5BO88="
+      }
+    },
+    "VideoListLambdaVersiont0vhx7tGFUSllqXBv4MKbR4Ba2vMX0t6H8jlTxnis": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "VideoListLambdaFunction"
+        },
+        "CodeSha256": "czYYID7Te7JFGszGEire4cdnjeNOk/sP1J0yfw5BO88="
+      }
+    },
+    "ClassListLambdaVersionKTr55ySFBcQejpAsH0aD5EDASLU3nGTcJXwkJuYiUjg": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ClassListLambdaFunction"
+        },
+        "CodeSha256": "czYYID7Te7JFGszGEire4cdnjeNOk/sP1J0yfw5BO88="
+      }
+    },
+    "AddLoginHistoryLambdaVersionpwEGTiBAXoD1IiqlLJ4i4nzIRa7E3QV9RWtZ2Wyh8": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AddLoginHistoryLambdaFunction"
+        },
+        "CodeSha256": "czYYID7Te7JFGszGEire4cdnjeNOk/sP1J0yfw5BO88="
+      }
+    },
+    "DeleteLoginHistoryLambdaVersionNiZRp9aWYLJkXgjEc04u8B8WglCHUqMUli0q4Rqlg": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DeleteLoginHistoryLambdaFunction"
+        },
+        "CodeSha256": "czYYID7Te7JFGszGEire4cdnjeNOk/sP1J0yfw5BO88="
+      }
+    },
+    "WorkListLambdaVersionIG1eUW4RKN8g5jutYaTPGlB42yuWHKAyqgWGbWQSjs": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "WorkListLambdaFunction"
+        },
+        "CodeSha256": "czYYID7Te7JFGszGEire4cdnjeNOk/sP1J0yfw5BO88="
+      }
+    },
+    "LoginLambdaVersionX1WUSlNool1CAeu66XU8056L6SOpiT9wlHTVS6BpA": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "LoginLambdaFunction"
+        },
+        "CodeSha256": "czYYID7Te7JFGszGEire4cdnjeNOk/sP1J0yfw5BO88="
       }
     },
     "ApiGatewayRestApi": {
@@ -572,6 +665,36 @@
         }
       }
     },
+    "ApiGatewayResourceAddloginhistory": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiGatewayRestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "addLoginHistory",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceDeleteloginhistory": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiGatewayRestApi",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "deleteLoginHistory",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
     "ApiGatewayMethodRegisterOptions": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -656,6 +779,51 @@
         },
         "ResourceId": {
           "Ref": "ApiGatewayResourceLogin"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodDeleteloginhistoryOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE'"
+              },
+              "ResponseTemplates": {
+                "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceDeleteloginhistory"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
@@ -920,7 +1088,93 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1618291059023": {
+    "ApiGatewayMethodAddloginhistoryPost": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "POST",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceAddloginhistory"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "AddLoginHistoryLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      }
+    },
+    "ApiGatewayMethodDeleteloginhistoryDelete": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "DELETE",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceDeleteloginhistory"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "DeleteLoginHistoryLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      }
+    },
+    "ApiGatewayDeployment1618668240987": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -931,12 +1185,15 @@
       "DependsOn": [
         "ApiGatewayMethodRegisterOptions",
         "ApiGatewayMethodLoginOptions",
+        "ApiGatewayMethodDeleteloginhistoryOptions",
         "ApiGatewayMethodRegisterPost",
         "ApiGatewayMethodLoginPost",
         "ApiGatewayMethodClassdetailsNameVarGet",
         "ApiGatewayMethodClasslistGet",
         "ApiGatewayMethodVideolistLessonidVarGet",
-        "ApiGatewayMethodWorklistLessonidVarGet"
+        "ApiGatewayMethodWorklistLessonidVarGet",
+        "ApiGatewayMethodAddloginhistoryPost",
+        "ApiGatewayMethodDeleteloginhistoryDelete"
       ]
     },
     "CreateLambdaPermissionApiGateway": {
@@ -1161,6 +1418,80 @@
         }
       }
     },
+    "AddLoginHistoryLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "AddLoginHistoryLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
+    "DeleteLoginHistoryLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "DeleteLoginHistoryLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
     "UsersDynamoDbTable": {
       "Type": "AWS::DynamoDB::Table",
       "DeletionPolicy": "Retain",
@@ -1183,6 +1514,29 @@
         },
         "TableName": "users"
       }
+    },
+    "LoginHistoryDynamoDbTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "email",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "email",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        },
+        "TableName": "login-history"
+      }
     }
   },
   "Outputs": {
@@ -1191,40 +1545,52 @@
         "Ref": "ServerlessDeploymentBucket"
       }
     },
-    "LoginLambdaFunctionQualifiedArn": {
-      "Description": "Current Lambda function version",
-      "Value": {
-        "Ref": "LoginLambdaVersionLi3gtRxo4DFPntLbo747XHkOdzFKdGTmlGOsbVlpo"
-      }
-    },
     "ClassDetailsLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ClassDetailsLambdaVersion8ij3BMdECW14tGzitndjMKKiEgfYb7SEkf2xGJUwI"
-      }
-    },
-    "ClassListLambdaFunctionQualifiedArn": {
-      "Description": "Current Lambda function version",
-      "Value": {
-        "Ref": "ClassListLambdaVersionLDMvBghU2nBdqV7TmJzikEqpwVhcWnN43Xp0BruUpA"
-      }
-    },
-    "VideoListLambdaFunctionQualifiedArn": {
-      "Description": "Current Lambda function version",
-      "Value": {
-        "Ref": "VideoListLambdaVersionijes6gnrTt7mMRqyPeAQi0M3h55OSmVwYQnpjIsRXc"
-      }
-    },
-    "WorkListLambdaFunctionQualifiedArn": {
-      "Description": "Current Lambda function version",
-      "Value": {
-        "Ref": "WorkListLambdaVersion5pCx8ho6Hx2HI6UzNOBeLCIfwTKS7ykVa3YLrZ6sLc"
+        "Ref": "ClassDetailsLambdaVersion3E73SiQJbbn0PENWzZN0TZ3DIrCFT0gsRSc4u5VdQg"
       }
     },
     "CreateLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "CreateLambdaVersion40cXX0eBOc402vVk6QZ3EbY5OkyrEPDNl5Qot0YPs"
+        "Ref": "CreateLambdaVersionaef7MMpaVLIn48UaMQyRcYPGqwe4Iq8BK57Ob2cs"
+      }
+    },
+    "VideoListLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "VideoListLambdaVersiont0vhx7tGFUSllqXBv4MKbR4Ba2vMX0t6H8jlTxnis"
+      }
+    },
+    "ClassListLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "ClassListLambdaVersionKTr55ySFBcQejpAsH0aD5EDASLU3nGTcJXwkJuYiUjg"
+      }
+    },
+    "AddLoginHistoryLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "AddLoginHistoryLambdaVersionpwEGTiBAXoD1IiqlLJ4i4nzIRa7E3QV9RWtZ2Wyh8"
+      }
+    },
+    "DeleteLoginHistoryLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DeleteLoginHistoryLambdaVersionNiZRp9aWYLJkXgjEc04u8B8WglCHUqMUli0q4Rqlg"
+      }
+    },
+    "WorkListLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "WorkListLambdaVersionIG1eUW4RKN8g5jutYaTPGlB42yuWHKAyqgWGbWQSjs"
+      }
+    },
+    "LoginLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "LoginLambdaVersionX1WUSlNool1CAeu66XU8056L6SOpiT9wlHTVS6BpA"
       }
     },
     "ServiceEndpoint": {

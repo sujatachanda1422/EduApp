@@ -1,7 +1,8 @@
-import React, {} from 'react';
+import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {http} from '../services/http';
 
 export default function MenuItems({navigation}) {
   const doLogout = () => {
@@ -12,11 +13,7 @@ export default function MenuItems({navigation}) {
       {
         text: 'Yes',
         onPress: () => {
-          AsyncStorage.clear();
-
-          navigation.navigate('HomeComp', {
-            screen: 'Login',
-          });
+          deleteLoginHistory();
         },
       },
     ]);
@@ -35,6 +32,32 @@ export default function MenuItems({navigation}) {
     }
 
     navigation.closeDrawer();
+  };
+
+  const deleteLoginHistory = async () => {
+    const data = JSON.parse(await AsyncStorage.getItem('userData'));
+
+    console.log('Sign out = ', data);
+
+    http
+      .delete(
+        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/deleteLoginHistory',
+        {email: data.email},
+      )
+      .then(response => response.json())
+      .then(res => {
+        console.log('deleteLoginHistory = ', res);
+        if (res.status === 200) {
+          AsyncStorage.clear();
+
+          navigation.navigate('HomeComp', {
+            screen: 'Login',
+          });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   return (

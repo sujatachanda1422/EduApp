@@ -10,7 +10,12 @@ import {
   Text,
   BackHandler,
 } from 'react-native';
-import {LoginManager} from 'react-native-fbsdk';
+import {
+  LoginManager,
+  AccessToken,
+  GraphRequest,
+  GraphRequestManager,
+} from 'react-native-fbsdk';
 import {
   GoogleSignin,
   statusCodes,
@@ -18,7 +23,6 @@ import {
 import {http} from '../services/http';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// const IMEI = require('react-native-imei');
 const logo = require('../images/bee.png');
 const appName = require('../images/app-name.png');
 const user1 = require('../images/user1.png');
@@ -30,14 +34,34 @@ export default function Login({navigation}) {
   const [errorMsg, setErrorMsg] = useState('');
   const [imei, setImei] = useState('');
 
-  // useEffect(() => {
-  //   IMEI.getImei().then(imeiList => {
-  //     console.log('imeiList', imeiList);
-  //   });
-  // }, []);
+  useEffect(() => {}, []);
+
+  const checkLoginInStore = (data: any) => {
+    console.log('Data = ', data);
+    const emailId = data.email;
+
+    http
+    .post(
+      'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/addLoginHistory',
+      {email: emailId},
+    )
+    .then(response => response.json())
+    .then(res => {
+      console.log('setLoginInDB = ', res);
+
+      if (res.status === 200) {
+        setLoginInStore(data);
+      } else if (res.status === 500) {
+        Alert.alert('', `User with email ${emailId} is already logged in another device.`);
+      }
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  };
 
   const setLoginInStore = async data => {
-    // console.log('Data = ', data);
+    console.log('setLoginInStore Data = ', data);
 
     const jsonValue = JSON.stringify(data);
     await AsyncStorage.setItem('userData', jsonValue);
@@ -47,13 +71,37 @@ export default function Login({navigation}) {
     });
   };
 
+  const getInfoFromToken = token => {
+    const PROFILE_REQUEST_PARAMS = {
+      fields: {
+        string: 'name, email',
+      },
+    };
+    const profileRequest = new GraphRequest(
+      '/me',
+      {token, parameters: PROFILE_REQUEST_PARAMS},
+      (error, result) => {
+        if (error) {
+          console.log('login info has error: ' + error);
+        } else {
+          console.log('result:', result);
+          checkLoginInStore(result);
+        }
+      },
+    );
+    new GraphRequestManager().addRequest(profileRequest).start();
+  };
+
   const facebookLogin = () => {
     LoginManager.logInWithPermissions(['public_profile']).then(
       result => {
         if (result.isCancelled) {
           console.log('Login cancelled');
         } else {
-          setLoginInStore(result);
+          AccessToken.getCurrentAccessToken().then(data => {
+            const accessToken = data.accessToken.toString();
+            getInfoFromToken(accessToken);
+          });
         }
       },
       error => {
@@ -66,7 +114,7 @@ export default function Login({navigation}) {
     try {
       await GoogleSignin.configure();
       const userInfo = await GoogleSignin.signIn();
-      setLoginInStore(userInfo);
+      checkLoginInStore(userInfo.user);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log('Login cancelled');
@@ -97,7 +145,7 @@ export default function Login({navigation}) {
         console.log('login = ', res);
 
         if (res.status === 200) {
-          setLoginInStore(res.data);
+          checkLoginInStore(res.data);
         } else if (res.status === 500 || res.status === 404) {
           setErrorMsg(res.message);
         }
