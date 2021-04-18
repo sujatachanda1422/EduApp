@@ -8,17 +8,20 @@ import {
   TextInput,
   Image,
   Alert,
+  Modal,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
-
-import {HelperText, Provider, DefaultTheme} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {HelperText, Provider, DefaultTheme, Checkbox} from 'react-native-paper';
 import {http} from '../services/http';
 import DropDown from '../libraries/dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as terms from '../data/terms.json';
 
 const logo = require('../images/bee.png');
 const roleList = [
-  {label: 'Student', value: 'student'},
+  {label: 'Student/Parent', value: 'student'},
   {label: 'Teacher', value: 'teacher'},
   // {label: 'Parent', value: 'Parent'},
   // {label: 'Admin', value: 'admin'},
@@ -38,6 +41,7 @@ const theme = {
     accent: '#000',
   },
 };
+const {width} = Dimensions.get('window');
 
 export default function Register({navigation}) {
   const [name, setName] = useState('');
@@ -51,6 +55,8 @@ export default function Register({navigation}) {
   const [classSelected, setClassSelected] = useState('');
   const [onSubmitClick, setOnSubmitClick] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [checked, setChecked] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const hasError = (field: string) => {
     if (!onSubmitClick) {
@@ -61,7 +67,7 @@ export default function Register({navigation}) {
       case 'name':
         return !name.trim();
       case 'mobile':
-        return !mobile || mobile.trim().length && mobile.length < 10;
+        return !mobile || (mobile.trim().length && mobile.length < 10);
       case 'password':
         return !pwd.trim();
       case 'email':
@@ -146,6 +152,10 @@ export default function Register({navigation}) {
       });
   };
 
+  const openTermsModal = () => {
+    setIsModalVisible(true);
+  };
+
   return (
     <Provider children="" theme={theme}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -154,6 +164,28 @@ export default function Register({navigation}) {
             <ActivityIndicator size="large" color="#9E9E9E" />
           </View>
         )}
+
+        <Modal
+          style={styles.modal}
+          // transparent
+          visible={isModalVisible}
+          presentationStyle="overFullScreen"
+          onDismiss={() => setIsModalVisible(false)}>
+          <View style={styles.viewWrapper}>
+            <View style={styles.modalView}>
+              <Icon
+                name="close"
+                color={'#000'}
+                size={30}
+                style={{alignSelf: 'flex-end', marginRight: 5}}
+                onPress={() => setIsModalVisible(false)}
+              />
+              <ScrollView style={{paddingHorizontal: 20,marginBottom: 20}}>
+                <Text>{terms.terms.join(" ")}</Text>
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
 
         <View style={styles.overlay}>
           <View>
@@ -289,10 +321,25 @@ export default function Register({navigation}) {
             </HelperText>
           </View>
 
+          <View style={styles.termsWrapper}>
+            <Checkbox
+              style={styles.checkBox}
+              status={checked ? 'checked' : 'unchecked'}
+              onPress={() => {
+                setChecked(!checked);
+              }}
+            />
+            <Text style={styles.termsText}>I agree to the </Text>
+            <Text style={styles.termsTextLink} onPress={() => openTermsModal()}>
+              Terms and Conditions.
+            </Text>
+          </View>
+
           <View style={{marginHorizontal: 20, marginTop: 10}}>
             <Button
               color="#e9165b"
               title="Register"
+              disabled={!checked}
               onPress={() => register()}
             />
           </View>
@@ -321,8 +368,31 @@ const styles = StyleSheet.create({
   overlay: {
     backgroundColor: '#fff',
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 30,
     height: '100%',
+  },
+  modal: {
+    // width: '80%',
+  },
+  viewWrapper: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+  },
+  modalView: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: '20%',
+    left: '45%',
+    elevation: 5,
+    transform: [{translateX: -(width * 0.4)}, {translateY: -90}],
+    height: '80%',
+    width: '90%',
+    backgroundColor: '#fff',
+    borderRadius: 7,
+    // paddingVertical: 20,
   },
   inputStyle: {
     width: '90%',
@@ -333,26 +403,26 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     height: 46,
     fontSize: 15,
-    marginBottom: 5
+    marginBottom: 5,
   },
   image: {
     flex: 1,
     justifyContent: 'center',
   },
   loginText: {
-    marginTop: 25,
+    marginTop: 20,
     color: '#0c50ea',
     textAlign: 'center',
     fontSize: 16,
   },
   dropDown: {
     marginHorizontal: 20,
-    marginBottom: 5
+    marginBottom: 5,
   },
   logo: {
     marginTop: 15,
-    width: 150,
-    height: 150,
+    width: 130,
+    height: 130,
     alignSelf: 'center',
   },
   preloader: {
@@ -365,5 +435,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#0000007d',
     zIndex: 1,
+  },
+  termsWrapper: {
+    flexDirection: 'row',
+    marginTop: -10,
+    marginLeft: 10,
+  },
+  termsTextLink: {
+    color: 'blue',
+    fontWeight: 'bold',
+    marginTop: 7,
+  },
+  termsText: {
+    color: '#000',
+    marginTop: 7,
+  },
+  checkBox: {
+    marginBottom: -10,
   },
 });
