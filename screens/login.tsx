@@ -22,6 +22,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import {http} from '../services/http';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CryptoJS from 'react-native-crypto-js';
 
 const logo = require('../images/bee.png');
 const appName = require('../images/app-name.png');
@@ -32,32 +33,32 @@ export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
-  const [imei, setImei] = useState('');
-
-  useEffect(() => {}, []);
 
   const checkLoginInStore = (data: any) => {
     console.log('Data = ', data);
     const emailId = data.email;
 
     http
-    .post(
-      'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/addLoginHistory',
-      {email: emailId},
-    )
-    .then(response => response.json())
-    .then(res => {
-      console.log('setLoginInDB = ', res);
+      .post(
+        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/addLoginHistory',
+        {email: emailId},
+      )
+      .then(response => response.json())
+      .then(res => {
+        console.log('setLoginInDB = ', res);
 
-      if (res.status === 200) {
-        setLoginInStore(data);
-      } else if (res.status === 500) {
-        Alert.alert('', `User with email ${emailId} is already logged in another device.`);
-      }
-    })
-    .catch(error => {
-      console.error(error);
-    });
+        if (res.status === 200) {
+          setLoginInStore(data);
+        } else if (res.status === 500) {
+          Alert.alert(
+            '',
+            `User with email ${emailId} is already logged in another device.`,
+          );
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   const setLoginInStore = async data => {
@@ -71,10 +72,16 @@ export default function Login({navigation}) {
     });
   };
 
+  const setProfile = data => {
+    console.log('Social = ', data);
+
+    userLogin(true, data);
+  };
+
   const getInfoFromToken = token => {
     const PROFILE_REQUEST_PARAMS = {
       fields: {
-        string: 'name, email',
+        string: 'email,name,friends',
       },
     };
     const profileRequest = new GraphRequest(
@@ -85,7 +92,7 @@ export default function Login({navigation}) {
           console.log('login info has error: ' + error);
         } else {
           console.log('result:', result);
-          checkLoginInStore(result);
+          setProfile(result);
         }
       },
     );
@@ -93,7 +100,7 @@ export default function Login({navigation}) {
   };
 
   const facebookLogin = () => {
-    LoginManager.logInWithPermissions(['public_profile']).then(
+    LoginManager.logInWithPermissions(['public_profile', 'email']).then(
       result => {
         if (result.isCancelled) {
           console.log('Login cancelled');
@@ -114,7 +121,7 @@ export default function Login({navigation}) {
     try {
       await GoogleSignin.configure();
       const userInfo = await GoogleSignin.signIn();
-      checkLoginInStore(userInfo.user);
+      setProfile(userInfo.user);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log('Login cancelled');
@@ -130,24 +137,50 @@ export default function Login({navigation}) {
     });
   };
 
-  const userLogin = () => {
-    if (!email.trim() || !pwd.trim()) {
+  const userLogin = (isSocial: boolean, data?) => {
+    if (!isSocial && (!email.trim() || !pwd.trim())) {
       return;
     }
+
+    const emailId = isSocial ? data.email : email;
+
+    console.log('emailId = ', emailId);
 
     http
       .post(
         'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/login',
-        {email, pwd},
+        {email: emailId},
       )
       .then(response => response.json())
       .then(res => {
         console.log('login = ', res);
 
-        if (res.status === 200) {
-          checkLoginInStore(res.data);
-        } else if (res.status === 500 || res.status === 404) {
-          setErrorMsg(res.message);
+        if (!isSocial) {
+          // Decrypt
+          let bytes = CryptoJS.AES.decrypt(res.data.pwd, 'issschool');
+          let pwdDecrypt = bytes.toString(CryptoJS.enc.Utf8);
+
+          if (res.status === 200) {
+            if (pwdDecrypt === pwd) {
+              checkLoginInStore(res.data);
+            } else {
+              setErrorMsg('Wrong password');
+            }
+          } else if (res.status === 404) {
+            setErrorMsg(res.message);
+          }
+        } else {
+          if (res.status === 200) {
+            checkLoginInStore(res.data);
+          } else {
+            navigation.navigate('HomeComp', {
+              screen: 'Profile',
+              params: {
+                emailId: data.email,
+                fullName: data.name,
+              },
+            });
+          }
         }
       })
       .catch(error => {
@@ -194,7 +227,11 @@ export default function Login({navigation}) {
             />
           </View>
           <View style={{marginTop: 10}}>
-            <Button color="#e9165b" title="Login" onPress={() => userLogin()} />
+            <Button
+              color="#e9165b"
+              title="Login"
+              onPress={() => userLogin(false)}
+            />
           </View>
           <View style={styles.loginBtn}>
             <View style={styles.fbBtn}>

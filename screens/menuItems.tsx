@@ -21,9 +21,19 @@ export default function MenuItems({navigation}) {
 
   const onMenuSelect = async (item: string) => {
     switch (item) {
+      case 'home':
+        navigation.navigate('HomeComp', {
+          screen: 'Dashboard',
+        });
+        break;
       case 'profile':
         navigation.navigate('HomeComp', {
           screen: 'Profile',
+        });
+        break;
+      case 'changePwd':
+        navigation.navigate('HomeComp', {
+          screen: 'ChangePwd',
         });
         break;
       case 'logout':
@@ -37,8 +47,6 @@ export default function MenuItems({navigation}) {
   const deleteLoginHistory = async () => {
     const data = JSON.parse(await AsyncStorage.getItem('userData'));
 
-    console.log('Sign out = ', data);
-
     http
       .delete(
         'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/deleteLoginHistory',
@@ -46,7 +54,6 @@ export default function MenuItems({navigation}) {
       )
       .then(response => response.json())
       .then(res => {
-        console.log('deleteLoginHistory = ', res);
         if (res.status === 200) {
           AsyncStorage.clear();
 
@@ -63,17 +70,39 @@ export default function MenuItems({navigation}) {
   return (
     <View style={styles.container}>
       <View>
-        {/* <TouchableOpacity
-            style={styles.itemWrapper}
-            onPress={() => onMenuSelect('profile')}>
-            <FontAwesome5
-              name="user-edit"
-              size={24}
-              color="#557dd6"
-              style={{marginLeft: -3}}
-            />
-            <Text style={styles.item}>Profile</Text>
-          </TouchableOpacity> */}
+        <TouchableOpacity
+          style={styles.itemWrapper}
+          onPress={() => onMenuSelect('home')}>
+          <MaterialCommunityIcons
+            name="home"
+            size={29}
+            color="#557dd6"
+            style={{marginLeft: -3}}
+          />
+          <Text style={styles.item}>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.itemWrapper}
+          onPress={() => onMenuSelect('profile')}>
+          <MaterialCommunityIcons
+            name="account-edit"
+            size={29}
+            color="#557dd6"
+            style={{marginLeft: -3}}
+          />
+          <Text style={styles.item}>Profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.itemWrapper}
+          onPress={() => onMenuSelect('changePwd')}>
+          <MaterialCommunityIcons
+            name="lock-question"
+            size={29}
+            color="#557dd6"
+            style={{marginLeft: -3}}
+          />
+          <Text style={styles.item}>Change Password</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.itemWrapper}
           onPress={() => onMenuSelect('logout')}>

@@ -10,7 +10,6 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 module.exports.login = (event, context, callback) => {
     const requestBody = JSON.parse(event.body);
     const email = requestBody.email;
-    const pwd = requestBody.pwd;
 
     const params = {
         TableName: process.env.USERS_TABLE,
@@ -21,17 +20,18 @@ module.exports.login = (event, context, callback) => {
 
     dynamoDb.get(params).promise()
         .then(result => {
-            let response;
+            let response, data = JSON.stringify(data, null, 2);
 
-            if (result.Item.pwd === pwd) {
+            if (data !== "{}") {
                 response = {
                     body: JSON.stringify({ status: 200, data: result.Item })
                 };
             } else {
                 response = {
-                    body: JSON.stringify({ status: 500, message: 'Wrong password' })
+                    body: JSON.stringify({ status: 500, message: 'No user found' })
                 };
             }
+
             callback(null, response);
         })
         .catch(error => {

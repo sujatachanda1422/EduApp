@@ -18,6 +18,7 @@ import {http} from '../services/http';
 import DropDown from '../libraries/dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as terms from '../data/terms.json';
+import CryptoJS from 'react-native-crypto-js';
 
 const logo = require('../images/bee.png');
 const roleList = [
@@ -124,6 +125,11 @@ export default function Register({navigation}) {
       return;
     }
 
+    // Encrypt
+    const encryptedPwd = CryptoJS.AES.encrypt(pwd, 'issschool').toString();
+
+    param.pwd = encryptedPwd;
+
     setIsLoading(true);
 
     http
@@ -157,7 +163,7 @@ export default function Register({navigation}) {
   };
 
   return (
-    <Provider children="" theme={theme}>
+    <Provider theme={theme}>
       <ScrollView contentContainerStyle={styles.container}>
         {isLoading && (
           <View style={styles.preloader}>
@@ -180,8 +186,8 @@ export default function Register({navigation}) {
                 style={{alignSelf: 'flex-end', marginRight: 5}}
                 onPress={() => setIsModalVisible(false)}
               />
-              <ScrollView style={{paddingHorizontal: 20,marginBottom: 20}}>
-                <Text>{terms.terms.join(" ")}</Text>
+              <ScrollView style={{paddingHorizontal: 20, marginBottom: 20}}>
+                <Text>{terms.terms.join(' ')}</Text>
               </ScrollView>
             </View>
           </View>

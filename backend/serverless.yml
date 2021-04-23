@@ -41,6 +41,20 @@ functions:
           path: register
           method: post
           cors: true
+  updaterUser:
+    handler: register.updaterUser
+    events:
+      - http:
+          path: updaterUser
+          method: post
+          cors: true
+  updatePassword:
+    handler: register.updatePassword
+    events:
+      - http:
+          path: updatePassword
+          method: post
+          cors: true
   login:
     handler: login.login
     events:

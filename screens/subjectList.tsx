@@ -17,6 +17,7 @@ import {useFocusEffect} from '@react-navigation/native';
 
 let userUrl = require('../images/user.png');
 let shadow = require('../images/shadow.png');
+let userShadow = require('../images/user-shadow.png');
 
 export default function SubjectList({navigation, route}) {
   const {className} = route.params;
@@ -124,6 +125,7 @@ export default function SubjectList({navigation, route}) {
 
       {user.role === 'student' && (
         <View style={styles.imageWrapper}>
+          <Image source={userShadow} style={styles.userShadow}></Image>
           <Image source={userUrl} style={styles.userImg}></Image>
           <Text style={styles.userName}>{user.name}</Text>
           <Text style={styles.class}>{className}</Text>
@@ -204,6 +206,12 @@ const styles = StyleSheet.create({
     left: -20,
     width: 110,
     height: 100,
+  },
+  userShadow: {
+    position: 'absolute',
+    width: 150,
+    height: 120,
+    top: -10,
   },
   imageWrapper: {
     justifyContent: 'center',

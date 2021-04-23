@@ -39,7 +39,7 @@ module.exports.signUp = (event, context, callback) => {
             response = JSON.stringify(data, null, 2);
 
             if (response === "{}") {
-                addUser(requestBody).then(res => {
+                updateUser(requestBody).then(res => {
                     callback(null, {
                         body: JSON.stringify({
                             status: 200,
@@ -64,10 +64,111 @@ module.exports.signUp = (event, context, callback) => {
             };
         }
     });
-
 };
 
-const addUser = (requestBody) => {
+module.exports.updaterUser = (event, context, callback) => {
+    const requestBody = JSON.parse(event.body);
+    const email = requestBody.email;
+    var params = {
+        TableName: "users",
+        Key: {
+            email
+        }
+    };
+
+    dynamoDb.get(params, function(err, data) {
+        let response;
+
+        if (err) {
+            response = {
+                body: JSON.stringify({ status: 501, message: "Unable to read item." })
+            };
+
+            callback(null, response);
+        } else {
+            response = JSON.stringify(data, null, 2);
+
+            if (response !== "{}") {
+                updateUser(updateUserInfo(data.Item, requestBody)).then(res => {
+                    callback(null, {
+                        body: JSON.stringify({
+                            status: 200,
+                            message: "Sucessfully submitted user with email",
+                            user: res
+                        })
+                    });
+                }).catch(err => {
+                    callback(null, {
+                        body: JSON.stringify({
+                            status: 500,
+                            message: "Unable to submit user with email"
+                        })
+                    });
+                });
+            } else {
+                response = {
+                    body: JSON.stringify({ status: 500, message: "No user found" })
+                };
+
+                callback(null, response);
+            };
+        }
+    });
+};
+
+module.exports.updatePassword = (event, context, callback) => {
+    const requestBody = JSON.parse(event.body);
+    const email = requestBody.email;
+    var params = {
+        TableName: "users",
+        Key: {
+            email
+        }
+    };
+
+    dynamoDb.get(params, function(err, data) {
+        let response;
+
+        if (err) {
+            response = {
+                body: JSON.stringify({ status: 501, message: "Unable to read item." })
+            };
+
+            callback(null, response);
+        } else {
+            response = JSON.stringify(data, null, 2);
+
+            if (response !== "{}") {
+                data.Item.pwd = requestBody.pwd;
+
+                updateUser(data.Item).then(res => {
+                    callback(null, {
+                        body: JSON.stringify({
+                            status: 200,
+                            message: "Sucessfully submitted user with email",
+                            user: res
+                        })
+                    });
+                }).catch(err => {
+                    callback(null, {
+                        body: JSON.stringify({
+                            status: 500,
+                            message: "Unable to submit user with email"
+                        })
+                    });
+                });
+            } else {
+                response = {
+                    body: JSON.stringify({ status: 500, message: "No user found" })
+                };
+
+                callback(null, response);
+            };
+        }
+    });
+};
+
+const updateUser = (requestBody) => {
     return submitUser(userInfo(requestBody))
         .then(res => requestBody)
         .catch(err => err);
@@ -81,6 +182,19 @@ const submitUser = user => {
 
     return dynamoDb.put(userInfo).promise()
         .then(res => user).catch(err => err);
+};
+
+const updateUserInfo = (oldReq, newReq) => {
+    const timestamp = new Date().getTime();
+
+    oldReq.email = newReq.email;
+    oldReq.mobile = newReq.mobile;
+    oldReq.name = newReq.name;
+    oldReq.updatedAt = timestamp;
+    oldReq.class = newReq.class;
+    oldReq.role = newReq.role;
+
+    return oldReq;
 };
 
 const userInfo = (requestBody) => {

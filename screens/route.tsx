@@ -5,7 +5,6 @@ import Login from './login';
 import Register from './register';
 import Dashboard from './dashboard';
 import SubjectList from './subjectList';
-import Role from './role';
 import Lesson from './lesson';
 import LessonDetails from './lessonDetails';
 import Scorm from './scorm';
@@ -16,6 +15,8 @@ import SplashScreen from 'react-native-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {View, Text} from 'react-native';
 import MenuItems from './menuItems';
+import Profile from './profile';
+import ChangePwd from './changePwd';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -100,15 +101,22 @@ function HomeComp() {
             }}
           />
           <Stack.Screen
-            name="SubjectList"
-            component={SubjectList}
+            name="Profile"
+            component={Profile}
             options={{
               headerShown: false,
             }}
           />
           <Stack.Screen
-            name="Role"
-            component={Role}
+            name="ChangePwd"
+            component={ChangePwd}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="SubjectList"
+            component={SubjectList}
             options={{
               headerShown: false,
             }}
