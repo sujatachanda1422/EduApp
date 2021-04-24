@@ -21,7 +21,7 @@ provider:
   package:
   individually: true
   environment:
-      USERS_TABLE: 'users'
+    USERS_TABLE: 'users'
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
@@ -30,6 +30,16 @@ provider:
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:DeleteItem
+        - s3:PutObject
+        - s3:PutObjectAcl
+        - s3:GetObject
+        - s3:ListBucket
+        - s3:HeadObject
+        - s3:GetBucketVersioning
+        - s3:PutBucketVersioning
+        - s3:ReplicateObject
+        - s3:ReplicateDelete
+        - s3:ObjectOwnerOverrideToBucketOwner
       Resource: '*'
 
 # The `functions` block defines what code to deploy
@@ -53,6 +63,13 @@ functions:
     events:
       - http:
           path: updatePassword
+          method: post
+          cors: true
+  updateImage:
+    handler: register.updateImage
+    events:
+      - http:
+          path: updateImage
           method: post
           cors: true
   login:
@@ -99,6 +116,33 @@ functions:
           path: deleteLoginHistory
           method: delete
           cors: true
+  imageUpload:
+    handler: imageUpload.imageUpload
+    events:
+      - http:
+          path: imageUpload
+          method: post
+          cors: true
+  getImage:
+    handler: imageUpload.getImage
+    events:
+      - http:
+          path: getImage
+          method: get
+
+S3UploadBucket:
+  Type: AWS::S3::Bucket
+  Properties:
+    CorsConfiguration:
+      CorsRules:
+        - AllowedHeaders:
+            - '*'
+          AllowedMethods:
+            - GET
+            - PUT
+            - HEAD
+          AllowedOrigins:
+            - '*'
 
 resources:
   Resources:
@@ -107,12 +151,10 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: email
+          - AttributeName: email
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: email
+          - AttributeName: email
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
@@ -123,12 +165,10 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: email
+          - AttributeName: email
             AttributeType: S
         KeySchema:
-          -
-            AttributeName: email
+          - AttributeName: email
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1

@@ -17,6 +17,7 @@ import {View, Text} from 'react-native';
 import MenuItems from './menuItems';
 import Profile from './profile';
 import ChangePwd from './changePwd';
+import ChangeProfilePic from './changeProfilePic';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -110,6 +111,13 @@ function HomeComp() {
           <Stack.Screen
             name="ChangePwd"
             component={ChangePwd}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="ChangeProfilePic"
+            component={ChangeProfilePic}
             options={{
               headerShown: false,
             }}

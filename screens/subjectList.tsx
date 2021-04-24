@@ -16,6 +16,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useFocusEffect} from '@react-navigation/native';
 
 let userUrl = require('../images/user.png');
+let userUrl1 = require('https://issschool-scorm.s3.amazonaws.com/avatars/%40.jpg');
 let shadow = require('../images/shadow.png');
 let userShadow = require('../images/user-shadow.png');
 
@@ -49,6 +50,8 @@ export default function SubjectList({navigation, route}) {
   const getSubjectsList = async () => {
     const data = JSON.parse(await AsyncStorage.getItem('userData'));
     setUser(data);
+
+    console.log("Image = ", data);
 
     const subjectsStoreData = await AsyncStorage.getItem('subjects');
 
@@ -103,6 +106,13 @@ export default function SubjectList({navigation, route}) {
     }
   };
 
+  const changeProfilePic = () => {
+    navigation.navigate('HomeComp', {
+      screen: 'ChangeProfilePic',
+      params: {},
+    });
+  };
+
   return (
     <View style={styles.container}>
       {isLoading && (
@@ -126,7 +136,10 @@ export default function SubjectList({navigation, route}) {
       {user.role === 'student' && (
         <View style={styles.imageWrapper}>
           <Image source={userShadow} style={styles.userShadow}></Image>
-          <Image source={userUrl} style={styles.userImg}></Image>
+          <TouchableOpacity onPress={changeProfilePic}>
+            {/* <Image source={user.imageUrl ? {uri: user.imageUrl} : userUrl} style={styles.userImg}></Image> */}
+            <Image source={user.imageUrl ? {uri: 'https://issschool-scorm.s3.amazonaws.com/avatars/%40.png'} : userUrl} style={styles.userImg}></Image>
+          </TouchableOpacity>
           <Text style={styles.userName}>{user.name}</Text>
           <Text style={styles.class}>{className}</Text>
         </View>

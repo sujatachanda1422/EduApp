@@ -45,8 +45,9 @@ export default function Worklist({navigation, workListData}) {
 
     let options = {
       fileCache: true,
-      // path: destPath,
+      path: destPath,
       addAndroidDownloads: {
+        path: destPath,
         useDownloadManager: true,
         notification: true,
         description: 'File downloaded by download manager.',

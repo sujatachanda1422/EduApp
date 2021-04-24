@@ -98,6 +98,13 @@ export default function Dashboard({navigation}) {
     });
   };
 
+  const changeProfilePic = () => {
+    navigation.navigate('HomeComp', {
+      screen: 'ChangeProfilePic',
+      params: {},
+    });
+  };
+
   const checkIndexIsEven = n => {
     return [0, 3].indexOf(n) > -1;
   };
@@ -116,7 +123,9 @@ export default function Dashboard({navigation}) {
 
       <View style={styles.imageWrapper}>
         <Image source={userShadow} style={styles.userShadow}></Image>
-        <Image source={userUrl} style={styles.userImg}></Image>
+        <TouchableOpacity onPress={changeProfilePic}>
+          <Image source={userUrl} style={styles.userImg}></Image>
+        </TouchableOpacity>
         <Text style={styles.userName}>{user.name}</Text>
         <Text style={styles.class}>{user.role}</Text>
       </View>

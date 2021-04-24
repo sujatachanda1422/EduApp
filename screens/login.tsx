@@ -100,7 +100,7 @@ export default function Login({navigation}) {
   };
 
   const facebookLogin = () => {
-    LoginManager.logInWithPermissions(['public_profile', 'email']).then(
+    LoginManager.logInWithPermissions(['public_profile', 'email', "user_friends"]).then(
       result => {
         if (result.isCancelled) {
           console.log('Login cancelled');

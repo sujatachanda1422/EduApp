@@ -162,6 +162,58 @@ module.exports.updatePassword = (event, context, callback) => {
     });
 };
 
+module.exports.updateImage = (event, context, callback) => {
+    const requestBody = JSON.parse(event.body);
+    const email = requestBody.email;
+    var params = {
+        TableName: "users",
+        Key: {
+            email
+        }
+    };
+
+    dynamoDb.get(params, function(err, data) {
+        let response;
+
+        if (err) {
+            response = {
+                body: JSON.stringify({ status: 501, message: "Unable to read item." })
+            };
+
+            callback(null, response);
+        } else {
+            response = JSON.stringify(data, null, 2);
+
+            if (response !== "{}") {
+                data.Item.imageUrl = requestBody.imageUrl;
+
+                updateUser(data.Item).then(res => {
+                    callback(null, {
+                        body: JSON.stringify({
+                            status: 200,
+                            message: "Sucessfully image updated",
+                            user: res
+                        })
+                    });
+                }).catch(err => {
+                    callback(null, {
+                        body: JSON.stringify({
+                            status: 404,
+                            message: "No user found"
+                        })
+                    });
+                });
+            } else {
+                response = {
+                    body: JSON.stringify({ status: 500, message: "Error in image upload" })
+                };
+
+                callback(null, response);
+            };
+        }
+    });
+};
+
 const updateUser = (requestBody) => {
     return submitUser(userInfo(requestBody))
         .then(res => requestBody)
@@ -201,6 +253,7 @@ const userInfo = (requestBody) => {
         pwd: requestBody.pwd,
         updatedAt: timestamp,
         class: requestBody.class,
-        role: requestBody.role
+        role: requestBody.role,
+        imageUrl: requestBody.imageUrl,
     };
 };

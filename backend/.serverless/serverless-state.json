@@ -21,7 +21,17 @@
             "dynamodb:Scan",
             "dynamodb:GetItem",
             "dynamodb:PutItem",
-            "dynamodb:DeleteItem"
+            "dynamodb:DeleteItem",
+            "s3:PutObject",
+            "s3:PutObjectAcl",
+            "s3:GetObject",
+            "s3:ListBucket",
+            "s3:HeadObject",
+            "s3:GetBucketVersioning",
+            "s3:PutBucketVersioning",
+            "s3:ReplicateObject",
+            "s3:ReplicateDelete",
+            "s3:ObjectOwnerOverrideToBucketOwner"
           ],
           "Resource": "*"
         }
@@ -121,6 +131,12 @@
               "LogGroupName": "/aws/lambda/Issschool-dev-updatePassword"
             }
           },
+          "UpdateImageLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/Issschool-dev-updateImage"
+            }
+          },
           "LoginLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
@@ -161,6 +177,18 @@
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
               "LogGroupName": "/aws/lambda/Issschool-dev-deleteLoginHistory"
+            }
+          },
+          "ImageUploadLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/Issschool-dev-imageUpload"
+            }
+          },
+          "GetImageLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/Issschool-dev-getImage"
             }
           },
           "IamRoleLambdaExecution": {
@@ -250,7 +278,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1619243457206-2021-04-24T05:50:57.206Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
               },
               "Handler": "register.signUp",
               "Runtime": "nodejs14.x",
@@ -280,7 +308,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1619243457206-2021-04-24T05:50:57.206Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
               },
               "Handler": "register.updaterUser",
               "Runtime": "nodejs14.x",
@@ -310,7 +338,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1619243457206-2021-04-24T05:50:57.206Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
               },
               "Handler": "register.updatePassword",
               "Runtime": "nodejs14.x",
@@ -333,6 +361,36 @@
               "UpdatePasswordLogGroup"
             ]
           },
+          "UpdateImageLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
+              },
+              "Handler": "register.updateImage",
+              "Runtime": "nodejs14.x",
+              "FunctionName": "Issschool-dev-updateImage",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "USERS_TABLE": "users"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UpdateImageLogGroup"
+            ]
+          },
           "LoginLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
@@ -340,7 +398,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1619243457206-2021-04-24T05:50:57.206Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
               },
               "Handler": "login.login",
               "Runtime": "nodejs14.x",
@@ -370,7 +428,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1619243457206-2021-04-24T05:50:57.206Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
               },
               "Handler": "classDetails.classDetails",
               "Runtime": "nodejs14.x",
@@ -400,7 +458,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1619243457206-2021-04-24T05:50:57.206Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
               },
               "Handler": "classDetails.classList",
               "Runtime": "nodejs14.x",
@@ -430,7 +488,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1619243457206-2021-04-24T05:50:57.206Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
               },
               "Handler": "videos.videoList",
               "Runtime": "nodejs14.x",
@@ -460,7 +518,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1619243457206-2021-04-24T05:50:57.206Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
               },
               "Handler": "videos.workList",
               "Runtime": "nodejs14.x",
@@ -490,7 +548,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1619243457206-2021-04-24T05:50:57.206Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
               },
               "Handler": "loginHistory.addLoginHistory",
               "Runtime": "nodejs14.x",
@@ -520,7 +578,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/Issschool/dev/1619243457206-2021-04-24T05:50:57.206Z/Issschool.zip"
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
               },
               "Handler": "loginHistory.deleteLoginHistory",
               "Runtime": "nodejs14.x",
@@ -543,104 +601,194 @@
               "DeleteLoginHistoryLogGroup"
             ]
           },
-          "UpdaterUserLambdaVersionUry0hUu5iX52dVPTzJ1XlSkCD8LoIS00k9uKFyM5aE": {
+          "ImageUploadLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
+              },
+              "Handler": "imageUpload.imageUpload",
+              "Runtime": "nodejs14.x",
+              "FunctionName": "Issschool-dev-imageUpload",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "USERS_TABLE": "users"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "ImageUploadLogGroup"
+            ]
+          },
+          "GetImageLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z/Issschool.zip"
+              },
+              "Handler": "imageUpload.getImage",
+              "Runtime": "nodejs14.x",
+              "FunctionName": "Issschool-dev-getImage",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "USERS_TABLE": "users"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetImageLogGroup"
+            ]
+          },
+          "UpdaterUserLambdaVersioni2BJmdCPlfYQBkPbIR0uFZZIAwyHl5IGDLU03GRAg": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UpdaterUserLambdaFunction"
               },
-              "CodeSha256": "f5r5liQavYwlmAL7hk67SMIAJ6KaefaUfCYudDp6SvE="
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
             }
           },
-          "UpdatePasswordLambdaVersion7wNREmy42AhX1OaUvPmSDAPJ3n5hqlWdPkjhkG4Bk": {
+          "UpdatePasswordLambdaVersionPAqOuJupMZ6wiIk3VU0YioASAH0mpQNoOXtzTtKYE": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UpdatePasswordLambdaFunction"
               },
-              "CodeSha256": "f5r5liQavYwlmAL7hk67SMIAJ6KaefaUfCYudDp6SvE="
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
             }
           },
-          "LoginLambdaVersion8Ag8kRjbkEENNll5BsW57d2iblMnUa7sgocT9OtQg": {
+          "UpdateImageLambdaVersionYoWNjHnLfnAaqkk5gQuIpx0k8h4Cnt1czlxyklcN9nA": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateImageLambdaFunction"
+              },
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
+            }
+          },
+          "LoginLambdaVersionadGOVkev8HrabUmW2xhumS1RRtvcqckGXDslbjwjM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "LoginLambdaFunction"
               },
-              "CodeSha256": "f5r5liQavYwlmAL7hk67SMIAJ6KaefaUfCYudDp6SvE="
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
             }
           },
-          "ClassListLambdaVersionPzKJa3PSQrDvzbcHkdQJhAEoTJtCnpL57m1Ef6pJho": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "ClassListLambdaFunction"
-              },
-              "CodeSha256": "f5r5liQavYwlmAL7hk67SMIAJ6KaefaUfCYudDp6SvE="
-            }
-          },
-          "ClassDetailsLambdaVersionLCqVz4xyqd2mX9CH78V1GCRKO5Epw8oR1HjUp9bek": {
+          "ClassDetailsLambdaVersion9j6km8TNEDvDqpRZgrRY7oPaCxfHBGXEBQLQKmFx30": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ClassDetailsLambdaFunction"
               },
-              "CodeSha256": "f5r5liQavYwlmAL7hk67SMIAJ6KaefaUfCYudDp6SvE="
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
             }
           },
-          "VideoListLambdaVersioneS5nPPzZB8NRA9obV3Sv19oDpTnCTipokhOCyWo7eY": {
+          "VideoListLambdaVersionGG0i9tEhV4IekgAUdwL1W1CONbycQ6OcdQ092pQ": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "VideoListLambdaFunction"
               },
-              "CodeSha256": "f5r5liQavYwlmAL7hk67SMIAJ6KaefaUfCYudDp6SvE="
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
             }
           },
-          "WorkListLambdaVersionhCZQ2c24HFQaoung2A85Mh7fDUfCABPjDoEuaVvFoaU": {
+          "ClassListLambdaVersionBmht6QhGcpT5hFeT0Npdmu6fZMOWKfCuOUXOEMxBcCU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
-                "Ref": "WorkListLambdaFunction"
+                "Ref": "ClassListLambdaFunction"
               },
-              "CodeSha256": "f5r5liQavYwlmAL7hk67SMIAJ6KaefaUfCYudDp6SvE="
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
             }
           },
-          "AddLoginHistoryLambdaVersionnjceBh1oTz6j3mvBQXH5aVa2Vk8Qks4cXO9epa6ZY": {
+          "AddLoginHistoryLambdaVersion6z4wjZunILzz34VibWQE0t2Vke2CHwdVf8tikgQE": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "AddLoginHistoryLambdaFunction"
               },
-              "CodeSha256": "f5r5liQavYwlmAL7hk67SMIAJ6KaefaUfCYudDp6SvE="
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
             }
           },
-          "DeleteLoginHistoryLambdaVersionwYHkLLaIHt9BqV7HgcG5uP5tpHMmeOxIUVUbJbDk": {
+          "WorkListLambdaVersion7ORm8gcsaFIPlmd3zNiQNlV8Ef4qLQLjsRLmnEYlI": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "WorkListLambdaFunction"
+              },
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
+            }
+          },
+          "DeleteLoginHistoryLambdaVersionMaNEjupDHUiBEJe1xUcVKFCYtXD8KOnm4aJDQdDM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "DeleteLoginHistoryLambdaFunction"
               },
-              "CodeSha256": "f5r5liQavYwlmAL7hk67SMIAJ6KaefaUfCYudDp6SvE="
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
             }
           },
-          "CreateLambdaVersionfj6GBdcnMm9vuUsJfn6GKmcO5FfEpaQkuiNU2tqbA": {
+          "GetImageLambdaVersionwRH4O7EPVZB5dUV3gkfdKLLWDdmpyw3NIogrpyxGcg": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetImageLambdaFunction"
+              },
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
+            }
+          },
+          "ImageUploadLambdaVersionOyS0b2mvpag6YgI10sTDDxRnGY1nJgqHMeQO39z5zs": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ImageUploadLambdaFunction"
+              },
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
+            }
+          },
+          "CreateLambdaVersionLY5i1d7MaC4ggu9aO653Nd5RxGOIzu8Kx2KBuImI3w": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateLambdaFunction"
               },
-              "CodeSha256": "f5r5liQavYwlmAL7hk67SMIAJ6KaefaUfCYudDp6SvE="
+              "CodeSha256": "pjgqGHBJ8OZN+7EuejzY/q+nHknM97LxB45qhGUjGEI="
             }
           },
           "ApiGatewayRestApi": {
@@ -695,6 +843,21 @@
                 ]
               },
               "PathPart": "updatePassword",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceUpdateimage": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "updateImage",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -841,6 +1004,36 @@
               }
             }
           },
+          "ApiGatewayResourceImageupload": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "imageUpload",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceGetimage": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "getImage",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
           "ApiGatewayMethodRegisterOptions": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
@@ -976,6 +1169,51 @@
               }
             }
           },
+          "ApiGatewayMethodUpdateimageOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUpdateimage"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
           "ApiGatewayMethodLoginOptions": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
@@ -1060,6 +1298,51 @@
               },
               "ResourceId": {
                 "Ref": "ApiGatewayResourceDeleteloginhistory"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodImageuploadOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceImageupload"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -1184,6 +1467,49 @@
                       {
                         "Fn::GetAtt": [
                           "UpdatePasswordLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodUpdateimagePost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceUpdateimage"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "UpdateImageLambdaFunction",
                           "Arn"
                         ]
                       },
@@ -1496,7 +1822,93 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1619243452312": {
+          "ApiGatewayMethodImageuploadPost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceImageupload"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ImageUploadLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodGetimageGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceGetimage"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetImageLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1619261602170": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -1508,18 +1920,23 @@
               "ApiGatewayMethodRegisterOptions",
               "ApiGatewayMethodUpdateruserOptions",
               "ApiGatewayMethodUpdatepasswordOptions",
+              "ApiGatewayMethodUpdateimageOptions",
               "ApiGatewayMethodLoginOptions",
               "ApiGatewayMethodDeleteloginhistoryOptions",
+              "ApiGatewayMethodImageuploadOptions",
               "ApiGatewayMethodRegisterPost",
               "ApiGatewayMethodUpdateruserPost",
               "ApiGatewayMethodUpdatepasswordPost",
+              "ApiGatewayMethodUpdateimagePost",
               "ApiGatewayMethodLoginPost",
               "ApiGatewayMethodClassdetailsNameVarGet",
               "ApiGatewayMethodClasslistGet",
               "ApiGatewayMethodVideolistLessonidVarGet",
               "ApiGatewayMethodWorklistLessonidVarGet",
               "ApiGatewayMethodAddloginhistoryPost",
-              "ApiGatewayMethodDeleteloginhistoryDelete"
+              "ApiGatewayMethodDeleteloginhistoryDelete",
+              "ApiGatewayMethodImageuploadPost",
+              "ApiGatewayMethodGetimageGet"
             ]
           },
           "CreateLambdaPermissionApiGateway": {
@@ -1602,6 +2019,43 @@
               "FunctionName": {
                 "Fn::GetAtt": [
                   "UpdatePasswordLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "UpdateImageLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UpdateImageLambdaFunction",
                   "Arn"
                 ]
               },
@@ -1892,6 +2346,80 @@
               }
             }
           },
+          "ImageUploadLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ImageUploadLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "GetImageLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetImageLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
           "UsersDynamoDbTable": {
             "Type": "AWS::DynamoDB::Table",
             "DeletionPolicy": "Retain",
@@ -1948,61 +2476,79 @@
           "UpdaterUserLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdaterUserLambdaVersionUry0hUu5iX52dVPTzJ1XlSkCD8LoIS00k9uKFyM5aE"
+              "Ref": "UpdaterUserLambdaVersioni2BJmdCPlfYQBkPbIR0uFZZIAwyHl5IGDLU03GRAg"
             }
           },
           "UpdatePasswordLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdatePasswordLambdaVersion7wNREmy42AhX1OaUvPmSDAPJ3n5hqlWdPkjhkG4Bk"
+              "Ref": "UpdatePasswordLambdaVersionPAqOuJupMZ6wiIk3VU0YioASAH0mpQNoOXtzTtKYE"
+            }
+          },
+          "UpdateImageLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UpdateImageLambdaVersionYoWNjHnLfnAaqkk5gQuIpx0k8h4Cnt1czlxyklcN9nA"
             }
           },
           "LoginLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "LoginLambdaVersion8Ag8kRjbkEENNll5BsW57d2iblMnUa7sgocT9OtQg"
-            }
-          },
-          "ClassListLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "ClassListLambdaVersionPzKJa3PSQrDvzbcHkdQJhAEoTJtCnpL57m1Ef6pJho"
+              "Ref": "LoginLambdaVersionadGOVkev8HrabUmW2xhumS1RRtvcqckGXDslbjwjM"
             }
           },
           "ClassDetailsLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ClassDetailsLambdaVersionLCqVz4xyqd2mX9CH78V1GCRKO5Epw8oR1HjUp9bek"
+              "Ref": "ClassDetailsLambdaVersion9j6km8TNEDvDqpRZgrRY7oPaCxfHBGXEBQLQKmFx30"
             }
           },
           "VideoListLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "VideoListLambdaVersioneS5nPPzZB8NRA9obV3Sv19oDpTnCTipokhOCyWo7eY"
+              "Ref": "VideoListLambdaVersionGG0i9tEhV4IekgAUdwL1W1CONbycQ6OcdQ092pQ"
             }
           },
-          "WorkListLambdaFunctionQualifiedArn": {
+          "ClassListLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "WorkListLambdaVersionhCZQ2c24HFQaoung2A85Mh7fDUfCABPjDoEuaVvFoaU"
+              "Ref": "ClassListLambdaVersionBmht6QhGcpT5hFeT0Npdmu6fZMOWKfCuOUXOEMxBcCU"
             }
           },
           "AddLoginHistoryLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "AddLoginHistoryLambdaVersionnjceBh1oTz6j3mvBQXH5aVa2Vk8Qks4cXO9epa6ZY"
+              "Ref": "AddLoginHistoryLambdaVersion6z4wjZunILzz34VibWQE0t2Vke2CHwdVf8tikgQE"
+            }
+          },
+          "WorkListLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "WorkListLambdaVersion7ORm8gcsaFIPlmd3zNiQNlV8Ef4qLQLjsRLmnEYlI"
             }
           },
           "DeleteLoginHistoryLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DeleteLoginHistoryLambdaVersionwYHkLLaIHt9BqV7HgcG5uP5tpHMmeOxIUVUbJbDk"
+              "Ref": "DeleteLoginHistoryLambdaVersionMaNEjupDHUiBEJe1xUcVKFCYtXD8KOnm4aJDQdDM"
+            }
+          },
+          "GetImageLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetImageLambdaVersionwRH4O7EPVZB5dUV3gkfdKLLWDdmpyw3NIogrpyxGcg"
+            }
+          },
+          "ImageUploadLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ImageUploadLambdaVersionOyS0b2mvpag6YgI10sTDDxRnGY1nJgqHMeQO39z5zs"
             }
           },
           "CreateLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateLambdaVersionfj6GBdcnMm9vuUsJfn6GKmcO5FfEpaQkuiNU2tqbA"
+              "Ref": "CreateLambdaVersionLY5i1d7MaC4ggu9aO653Nd5RxGOIzu8Kx2KBuImI3w"
             }
           },
           "ServiceEndpoint": {
@@ -2155,7 +2701,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "CreateLambdaVersionfj6GBdcnMm9vuUsJfn6GKmcO5FfEpaQkuiNU2tqbA"
+        "versionLogicalId": "CreateLambdaVersionLY5i1d7MaC4ggu9aO653Nd5RxGOIzu8Kx2KBuImI3w"
       },
       "updaterUser": {
         "handler": "register.updaterUser",
@@ -2193,7 +2739,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "UpdaterUserLambdaVersionUry0hUu5iX52dVPTzJ1XlSkCD8LoIS00k9uKFyM5aE"
+        "versionLogicalId": "UpdaterUserLambdaVersioni2BJmdCPlfYQBkPbIR0uFZZIAwyHl5IGDLU03GRAg"
       },
       "updatePassword": {
         "handler": "register.updatePassword",
@@ -2231,7 +2777,45 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "UpdatePasswordLambdaVersion7wNREmy42AhX1OaUvPmSDAPJ3n5hqlWdPkjhkG4Bk"
+        "versionLogicalId": "UpdatePasswordLambdaVersionPAqOuJupMZ6wiIk3VU0YioASAH0mpQNoOXtzTtKYE"
+      },
+      "updateImage": {
+        "handler": "register.updateImage",
+        "events": [
+          {
+            "http": {
+              "path": "updateImage",
+              "method": "post",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "Issschool-dev-updateImage",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs14.x",
+        "vpc": {},
+        "versionLogicalId": "UpdateImageLambdaVersionYoWNjHnLfnAaqkk5gQuIpx0k8h4Cnt1czlxyklcN9nA"
       },
       "login": {
         "handler": "login.login",
@@ -2269,7 +2853,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "LoginLambdaVersion8Ag8kRjbkEENNll5BsW57d2iblMnUa7sgocT9OtQg"
+        "versionLogicalId": "LoginLambdaVersionadGOVkev8HrabUmW2xhumS1RRtvcqckGXDslbjwjM"
       },
       "classDetails": {
         "handler": "classDetails.classDetails",
@@ -2288,7 +2872,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "ClassDetailsLambdaVersionLCqVz4xyqd2mX9CH78V1GCRKO5Epw8oR1HjUp9bek"
+        "versionLogicalId": "ClassDetailsLambdaVersion9j6km8TNEDvDqpRZgrRY7oPaCxfHBGXEBQLQKmFx30"
       },
       "classList": {
         "handler": "classDetails.classList",
@@ -2307,7 +2891,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "ClassListLambdaVersionPzKJa3PSQrDvzbcHkdQJhAEoTJtCnpL57m1Ef6pJho"
+        "versionLogicalId": "ClassListLambdaVersionBmht6QhGcpT5hFeT0Npdmu6fZMOWKfCuOUXOEMxBcCU"
       },
       "videoList": {
         "handler": "videos.videoList",
@@ -2326,7 +2910,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "VideoListLambdaVersioneS5nPPzZB8NRA9obV3Sv19oDpTnCTipokhOCyWo7eY"
+        "versionLogicalId": "VideoListLambdaVersionGG0i9tEhV4IekgAUdwL1W1CONbycQ6OcdQ092pQ"
       },
       "workList": {
         "handler": "videos.workList",
@@ -2345,7 +2929,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "WorkListLambdaVersionhCZQ2c24HFQaoung2A85Mh7fDUfCABPjDoEuaVvFoaU"
+        "versionLogicalId": "WorkListLambdaVersion7ORm8gcsaFIPlmd3zNiQNlV8Ef4qLQLjsRLmnEYlI"
       },
       "addLoginHistory": {
         "handler": "loginHistory.addLoginHistory",
@@ -2364,7 +2948,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "AddLoginHistoryLambdaVersionnjceBh1oTz6j3mvBQXH5aVa2Vk8Qks4cXO9epa6ZY"
+        "versionLogicalId": "AddLoginHistoryLambdaVersion6z4wjZunILzz34VibWQE0t2Vke2CHwdVf8tikgQE"
       },
       "deleteLoginHistory": {
         "handler": "loginHistory.deleteLoginHistory",
@@ -2402,7 +2986,64 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "DeleteLoginHistoryLambdaVersionwYHkLLaIHt9BqV7HgcG5uP5tpHMmeOxIUVUbJbDk"
+        "versionLogicalId": "DeleteLoginHistoryLambdaVersionMaNEjupDHUiBEJe1xUcVKFCYtXD8KOnm4aJDQdDM"
+      },
+      "imageUpload": {
+        "handler": "imageUpload.imageUpload",
+        "events": [
+          {
+            "http": {
+              "path": "imageUpload",
+              "method": "post",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "Issschool-dev-imageUpload",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs14.x",
+        "vpc": {},
+        "versionLogicalId": "ImageUploadLambdaVersionOyS0b2mvpag6YgI10sTDDxRnGY1nJgqHMeQO39z5zs"
+      },
+      "getImage": {
+        "handler": "imageUpload.getImage",
+        "events": [
+          {
+            "http": {
+              "path": "getImage",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "Issschool-dev-getImage",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs14.x",
+        "vpc": {},
+        "versionLogicalId": "GetImageLambdaVersionwRH4O7EPVZB5dUV3gkfdKLLWDdmpyw3NIogrpyxGcg"
       }
     },
     "resources": {
@@ -2473,6 +3114,28 @@
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
       },
+      "S3UploadBucket": {
+        "Type": "AWS::S3::Bucket",
+        "Properties": {
+          "CorsConfiguration": {
+            "CorsRules": [
+              {
+                "AllowedHeaders": [
+                  "*"
+                ],
+                "AllowedMethods": [
+                  "GET",
+                  "PUT",
+                  "HEAD"
+                ],
+                "AllowedOrigins": [
+                  "*"
+                ]
+              }
+            ]
+          }
+        }
+      },
       "resources": {
         "$ref": "$[\"service\"][\"resources\"]"
       }
@@ -2481,7 +3144,7 @@
     "artifact": "D:\\apps\\Issschool\\backend\\.serverless\\Issschool.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/Issschool/dev/1619243457206-2021-04-24T05:50:57.206Z",
+    "artifactDirectoryName": "serverless/Issschool/dev/1619261604602-2021-04-24T10:53:24.602Z",
     "artifact": "Issschool.zip"
   }
 }
