@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -14,6 +14,7 @@ import {http} from '../services/http';
 import DropDown from '../libraries/dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useFocusEffect} from '@react-navigation/native';
 
 const roleList = [
   {label: 'Student/Parent', value: 'student'},
@@ -49,18 +50,24 @@ export default function Profile({route, navigation}) {
   const [visible, setVisible] = React.useState(false);
   const [showRoleDropDown, setShowRoleDropDown] = useState(false);
 
-  const {emailId, fullName} = route.params;
+  let {emailId, fullName} = route.params;
 
   const onDismissSnackBar = () => setVisible(false);
 
-  useEffect(() => {
-    if (emailId) {
-      setName(fullName);
-      setEmail(emailId);
-    } else {
-      setUserDetails();
-    }
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      if (emailId) {
+        setName(fullName);
+        setEmail(emailId);
+      } else {
+        setUserDetails();
+      }
+
+      return () => {
+        emailId = null;
+      };
+    }, []),
+  );
 
   const setUserDetails = async () => {
     const data = JSON.parse(await AsyncStorage.getItem('userData'));
@@ -106,6 +113,29 @@ export default function Profile({route, navigation}) {
     }
   };
 
+  const registerUser = param => {
+    http
+      .post(
+        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/register',
+        param,
+      )
+      .then(response => response.json())
+      .then(async res => {
+        console.log('Data = ', res);
+        setIsLoading(false);
+
+        if (res.status === 200) {
+          checkLoginInStore(res.user);
+        } else if (res.status === 500) {
+          Alert.alert('', `Update error`);
+        }
+      })
+      .catch(error => {
+        setIsLoading(false);
+        console.error(error);
+      });
+  };
+
   const updateUser = () => {
     setOnSubmitClick(true);
 
@@ -118,6 +148,11 @@ export default function Profile({route, navigation}) {
     };
 
     if (!name || !mobile || !classSelected || !role) {
+      return;
+    }
+
+    if (emailId) {
+      registerUser(param);
       return;
     }
 
@@ -138,17 +173,13 @@ export default function Profile({route, navigation}) {
 
           await AsyncStorage.setItem('userData', JSON.stringify(res.user));
 
-          if (emailId) {
-            checkLoginInStore(res.user);
-          } else {
-            setTimeout(() => {
-              navigation.navigate('HomeComp', {
-                screen: 'Dashboard',
-              });
-            }, 500);
-          }
+          setTimeout(() => {
+            navigation.navigate('HomeComp', {
+              screen: 'Dashboard',
+            });
+          }, 500);
         } else if (res.status === 500) {
-          Alert.alert('', `User with email ${email} already exists.`);
+          Alert.alert('', `Update error`);
         }
       })
       .catch(error => {
@@ -199,9 +230,19 @@ export default function Profile({route, navigation}) {
         )}
 
         <View style={styles.overlay}>
-          <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <MaterialCommunityIcons name="menu" size={34} color="grey" />
-          </TouchableOpacity>
+          {!emailId && (
+            <TouchableOpacity onPress={() => navigation.openDrawer()}>
+              <MaterialCommunityIcons name="menu" size={34} color="grey" />
+            </TouchableOpacity>
+          )}
+          {emailId && (
+            <MaterialCommunityIcons
+              name="chevron-left"
+              color={'#000'}
+              size={35}
+              onPress={() => navigation.goBack()}
+            />
+          )}
 
           <Snackbar
             visible={visible}

@@ -20,7 +20,7 @@ module.exports.login = (event, context, callback) => {
 
     dynamoDb.get(params).promise()
         .then(result => {
-            let response, data = JSON.stringify(data, null, 2);
+            let response, data = JSON.stringify(result, null, 2);
 
             if (data !== "{}") {
                 response = {
@@ -28,16 +28,16 @@ module.exports.login = (event, context, callback) => {
                 };
             } else {
                 response = {
-                    body: JSON.stringify({ status: 500, message: 'No user found' })
+                    body: JSON.stringify({ status: 404, message: 'No user found' })
                 };
             }
 
             callback(null, response);
         })
         .catch(error => {
-            console.error("Error in data", params);
+            console.error("Error in data", params, error);
             const response = {
-                body: JSON.stringify({ status: 404, message: 'No user found' })
+                body: JSON.stringify({ status: 500, message: 'Login error' })
             };
             callback(null, response);
             return;

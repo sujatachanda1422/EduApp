@@ -166,7 +166,7 @@ export default function Login({navigation}) {
             } else {
               setErrorMsg('Wrong password');
             }
-          } else if (res.status === 404) {
+          } else if (res.status === 500) {
             setErrorMsg(res.message);
           }
         } else {

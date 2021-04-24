@@ -20,12 +20,6 @@ module.exports.signUp = (event, context, callback) => {
         }
     };
 
-    if (name.trim() === '' || email.trim() === '' || pwd.trim() === '') {
-        console.error('Validation Failed');
-        callback(new Error('Couldn\'t submit user because of validation errors.'));
-        return;
-    }
-
     dynamoDb.get(params, function(err, data) {
         let response;
 

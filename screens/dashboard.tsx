@@ -38,8 +38,12 @@ export default function Dashboard({navigation}) {
   };
 
   const getSubjectsList = async () => {
+    setIsLoading(true);
+
     const data = JSON.parse(await AsyncStorage.getItem('userData'));
     setUser(data);
+
+    setIsLoading(false);
 
     if (data.role === 'student') {
       navigation.navigate('HomeComp', {

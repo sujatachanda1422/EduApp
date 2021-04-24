@@ -29,6 +29,10 @@ export default function MenuItems({navigation}) {
       case 'profile':
         navigation.navigate('HomeComp', {
           screen: 'Profile',
+          params: {
+            emailId: null,
+            fullName: null,
+          },
         });
         break;
       case 'changePwd':
