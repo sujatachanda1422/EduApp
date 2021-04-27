@@ -116,7 +116,7 @@ export default function Profile({route, navigation}) {
   const registerUser = param => {
     http
       .post(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/register',
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/register',
         param,
       )
       .then(response => response.json())
@@ -160,7 +160,7 @@ export default function Profile({route, navigation}) {
 
     http
       .post(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/updaterUser',
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/updaterUser',
         param,
       )
       .then(response => response.json())
@@ -194,7 +194,7 @@ export default function Profile({route, navigation}) {
 
     http
       .post(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/addLoginHistory',
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/addLoginHistory',
         {email: emailId},
       )
       .then(response => response.json())

@@ -53,18 +53,16 @@ export default function MenuItems({navigation}) {
 
     http
       .delete(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/deleteLoginHistory',
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/deleteLoginHistory',
         {email: data.email},
       )
       .then(response => response.json())
       .then(res => {
-        if (res.status === 200) {
-          AsyncStorage.clear();
+        AsyncStorage.clear();
 
-          navigation.navigate('HomeComp', {
-            screen: 'Login',
-          });
-        }
+        navigation.navigate('HomeComp', {
+          screen: 'Login',
+        });
       })
       .catch(error => {
         console.error(error);

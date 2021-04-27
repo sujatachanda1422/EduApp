@@ -18,6 +18,7 @@ provider:
   runtime: nodejs14.x
   stackName: register
   stage: dev
+  region: ap-south-1
   package:
   individually: true
   environment:
@@ -30,16 +31,10 @@ provider:
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:DeleteItem
-        - s3:PutObject
-        - s3:PutObjectAcl
-        - s3:GetObject
-        - s3:ListBucket
-        - s3:HeadObject
-        - s3:GetBucketVersioning
-        - s3:PutBucketVersioning
-        - s3:ReplicateObject
-        - s3:ReplicateDelete
-        - s3:ObjectOwnerOverrideToBucketOwner
+        - "s3:PutObject"
+        - "s3:GetObject"
+        - "s3:DeleteObject"
+        - "s3:PutObjectAcl"
       Resource: '*'
 
 # The `functions` block defines what code to deploy
@@ -127,22 +122,8 @@ functions:
     handler: imageUpload.getImage
     events:
       - http:
-          path: getImage
+          path: getImage/{email}
           method: get
-
-S3UploadBucket:
-  Type: AWS::S3::Bucket
-  Properties:
-    CorsConfiguration:
-      CorsRules:
-        - AllowedHeaders:
-            - '*'
-          AllowedMethods:
-            - GET
-            - PUT
-            - HEAD
-          AllowedOrigins:
-            - '*'
 
 resources:
   Resources:

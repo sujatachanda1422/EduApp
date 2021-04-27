@@ -68,7 +68,7 @@ export default function Dashboard({navigation}) {
 
     http
       .get(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/classList',
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/classList',
       )
       .then(response => response.json())
       .then(async res => {
@@ -78,6 +78,7 @@ export default function Dashboard({navigation}) {
         if (res.length) {
           setClasses(res);
           await AsyncStorage.setItem('classList', JSON.stringify(res));
+          getImageData(data.email);
         }
       })
       .catch(error => {
@@ -109,6 +110,34 @@ export default function Dashboard({navigation}) {
     return [0, 3].indexOf(n) > -1;
   };
 
+  const getImageData = email => {
+    http
+      .get(
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/getImage/' +
+          email,
+      )
+      .then(response => response.json())
+      .then(async res => {
+        if (res.status === 200) {
+          let userData = JSON.parse(await AsyncStorage.getItem('userData'));
+          userData.imageUrl = res.data.replace(
+            'dataimage/jpegbase64',
+            'data:image/jpeg;base64,',
+          );
+          setUser(userData);
+
+          console.log('email   = ', email, userData);
+
+          AsyncStorage.setItem('userData', JSON.stringify(userData));
+        }
+      })
+      .catch(error => {
+        console.log('classes error = ', error);
+        setIsLoading(false);
+        console.error(error);
+      });
+  };
+
   return (
     <View style={styles.container}>
       {isLoading && (
@@ -124,7 +153,9 @@ export default function Dashboard({navigation}) {
       <View style={styles.imageWrapper}>
         <Image source={userShadow} style={styles.userShadow}></Image>
         <TouchableOpacity onPress={changeProfilePic}>
-          <Image source={userUrl} style={styles.userImg}></Image>
+          <Image
+            source={user.imageUrl ? {uri: user.imageUrl} : userUrl}
+            style={styles.userImg}></Image>
         </TouchableOpacity>
         <Text style={styles.userName}>{user.name}</Text>
         <Text style={styles.class}>{user.role}</Text>
@@ -239,7 +270,7 @@ const styles = StyleSheet.create({
   userImg: {
     width: 100,
     height: 100,
-    borderRadius: 40,
+    borderRadius: 100,
     overflow: 'hidden',
     resizeMode: 'contain',
     //  position: 'absolute',

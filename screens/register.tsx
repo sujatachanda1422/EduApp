@@ -134,7 +134,7 @@ export default function Register({navigation}) {
 
     http
       .post(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/register',
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/register',
         param,
       )
       .then(response => response.json())

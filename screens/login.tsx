@@ -40,7 +40,7 @@ export default function Login({navigation}) {
 
     http
       .post(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/addLoginHistory',
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/addLoginHistory',
         {email: emailId},
       )
       .then(response => response.json())
@@ -100,7 +100,11 @@ export default function Login({navigation}) {
   };
 
   const facebookLogin = () => {
-    LoginManager.logInWithPermissions(['public_profile', 'email', "user_friends"]).then(
+    LoginManager.logInWithPermissions([
+      'public_profile',
+      'email',
+      'user_friends',
+    ]).then(
       result => {
         if (result.isCancelled) {
           console.log('Login cancelled');
@@ -148,7 +152,7 @@ export default function Login({navigation}) {
 
     http
       .post(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/login',
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/login',
         {email: emailId},
       )
       .then(response => response.json())
@@ -156,17 +160,17 @@ export default function Login({navigation}) {
         console.log('login = ', res);
 
         if (!isSocial) {
-          // Decrypt
-          let bytes = CryptoJS.AES.decrypt(res.data.pwd, 'issschool');
-          let pwdDecrypt = bytes.toString(CryptoJS.enc.Utf8);
-
           if (res.status === 200) {
+            // Decrypt
+            let bytes = CryptoJS.AES.decrypt(res.data.pwd, 'issschool');
+            let pwdDecrypt = bytes.toString(CryptoJS.enc.Utf8);
+
             if (pwdDecrypt === pwd) {
               checkLoginInStore(res.data);
             } else {
               setErrorMsg('Wrong password');
             }
-          } else if (res.status === 500) {
+          } else if (res.status === 500 || res.status === 404) {
             setErrorMsg(res.message);
           }
         } else {

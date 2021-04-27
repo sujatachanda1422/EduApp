@@ -30,15 +30,17 @@ module.exports.imageUpload = (event, context, callback) => {
 module.exports.getImage = (event, context, callback) => {
     var params = {
         "Bucket": "issschool-scorm",
-        "Key": "avatars/" + event.queryStringParameters.email + ".jpg"
+        "Key": "avatars/" + event.pathParameters.email + ".jpg"
     };
 
     s3.getObject(params, function(err, data) {
         if (err) {
             callback(err, null);
         } else {
+            let base64 = data.Body.toString('base64');
+
             let response = {
-                "body": JSON.stringify({ status: 200, data })
+                "body": JSON.stringify({ status: 200, data: base64 })
             };
 
             callback(null, response);

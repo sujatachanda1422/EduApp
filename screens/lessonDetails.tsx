@@ -34,11 +34,12 @@ export default function LessonDetails({route, navigation}) {
 
     http
       .get(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/videoList/' +
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/videoList/' +
           lessonId,
       )
       .then(response => response.json())
       .then(res => {
+        console.log("data = ", res);
         if (res.videos) {
           setVideos(res.videos);
           setIsLoading(false);
@@ -52,7 +53,7 @@ export default function LessonDetails({route, navigation}) {
   const getWorkList = () => {
     http
       .get(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/workList/' +
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/workList/' +
           lessonId,
       )
       .then(response => response.json())

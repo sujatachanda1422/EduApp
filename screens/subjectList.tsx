@@ -16,7 +16,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useFocusEffect} from '@react-navigation/native';
 
 let userUrl = require('../images/user.png');
-let userUrl1 = require('https://issschool-scorm.s3.amazonaws.com/avatars/%40.jpg');
 let shadow = require('../images/shadow.png');
 let userShadow = require('../images/user-shadow.png');
 
@@ -51,8 +50,6 @@ export default function SubjectList({navigation, route}) {
     const data = JSON.parse(await AsyncStorage.getItem('userData'));
     setUser(data);
 
-    console.log("Image = ", data);
-
     const subjectsStoreData = await AsyncStorage.getItem('subjects');
 
     if (subjectsStoreData) {
@@ -66,7 +63,7 @@ export default function SubjectList({navigation, route}) {
 
     http
       .get(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/classDetails/' +
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/classDetails/' +
           className,
       )
       .then(response => response.json())
@@ -77,6 +74,35 @@ export default function SubjectList({navigation, route}) {
           setIsLoading(false);
           setSubjects(res.subjects);
           AsyncStorage.setItem('subjects', JSON.stringify(res.subjects));
+          getImageData(data.email);
+        }
+      })
+      .catch(error => {
+        console.log('classes error = ', error);
+        setIsLoading(false);
+        console.error(error);
+      });
+  };
+
+  const getImageData = email => {
+    http
+      .get(
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/getImage/' +
+          email,
+      )
+      .then(response => response.json())
+      .then(async res => {
+        if (res.status === 200) {
+          let userData = JSON.parse(await AsyncStorage.getItem('userData'));
+          userData.imageUrl = res.data.replace(
+            'dataimage/jpegbase64',
+            'data:image/jpeg;base64,',
+          );
+          setUser(userData);
+
+          console.log('email   = ', email, userData);
+
+          AsyncStorage.setItem('userData', JSON.stringify(userData));
         }
       })
       .catch(error => {
@@ -137,8 +163,9 @@ export default function SubjectList({navigation, route}) {
         <View style={styles.imageWrapper}>
           <Image source={userShadow} style={styles.userShadow}></Image>
           <TouchableOpacity onPress={changeProfilePic}>
-            {/* <Image source={user.imageUrl ? {uri: user.imageUrl} : userUrl} style={styles.userImg}></Image> */}
-            <Image source={user.imageUrl ? {uri: 'https://issschool-scorm.s3.amazonaws.com/avatars/%40.png'} : userUrl} style={styles.userImg}></Image>
+            <Image
+              source={user.imageUrl ? {uri: user.imageUrl} : userUrl}
+              style={styles.userImg}></Image>
           </TouchableOpacity>
           <Text style={styles.userName}>{user.name}</Text>
           <Text style={styles.class}>{className}</Text>
@@ -217,7 +244,7 @@ const styles = StyleSheet.create({
   shadowImg: {
     position: 'absolute',
     left: -20,
-    width: 110,
+    width: 100,
     height: 100,
   },
   userShadow: {
@@ -234,8 +261,9 @@ const styles = StyleSheet.create({
   userImg: {
     width: 100,
     height: 100,
-    borderRadius: 40,
+    borderRadius: 100,
     overflow: 'hidden',
+    borderWidth: 0,
     resizeMode: 'contain',
   },
   userName: {

@@ -63,7 +63,7 @@ export default function Profile({navigation}) {
 
     http
       .post(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/updatePassword',
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/updatePassword',
         param,
       )
       .then(response => response.json())

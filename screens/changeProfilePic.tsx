@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   StyleSheet,
   View,
@@ -13,8 +13,8 @@ import {HelperText, Provider, Snackbar} from 'react-native-paper';
 import {http} from '../services/http';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import CryptoJS from 'react-native-crypto-js';
 import ImagePicker from 'react-native-image-picker';
+import {useFocusEffect} from '@react-navigation/native';
 
 let userUrl = require('../images/user.png');
 
@@ -25,6 +25,19 @@ export default function ChangeProfilePic({navigation}) {
   const [visible, setVisible] = React.useState(false);
 
   const onDismissSnackBar = () => setVisible(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      checkImage();
+    }, []),
+  );
+
+  const checkImage = async () => {
+    const userData = JSON.parse(await AsyncStorage.getItem('userData'));
+    if (userData.imageUrl) {
+      setImage(userData.imageUrl);
+    }
+  };
 
   const uploadImage = async () => {
     if (!imageBlob) {
@@ -43,41 +56,14 @@ export default function ChangeProfilePic({navigation}) {
 
     http
       .post(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/imageUpload',
+        'https://eci0xf7t0i.execute-api.ap-south-1.amazonaws.com/dev/imageUpload',
         param,
       )
       .then(response => response.json())
       .then(async res => {
-        console.log('Data = ', res);
-
-        if (res.status === 200) {
-          setImageInDb(user, res.data.Location);
-        } else {
-          setIsLoading(false);
-
-          Alert.alert('', `Image upload error`);
-        }
-      })
-      .catch(error => {
-        setIsLoading(false);
-        console.error(error);
-      });
-  };
-
-  const setImageInDb = async (user, imageUrl) => {
-    http
-      .post(
-        'https://yymwutqwze.execute-api.us-east-1.amazonaws.com/dev/updateImage',
-        {email: user.email, imageUrl},
-      )
-      .then(response => response.json())
-      .then(async res => {
-        console.log('Data = ', res);
-        setIsLoading(false);
-
         if (res.status === 200) {
           setVisible(true);
-          user.imageUrl = imageUrl;
+          user.imageUrl = imageBlob;
           await AsyncStorage.setItem('userData', JSON.stringify(user));
 
           setTimeout(() => {
@@ -86,6 +72,8 @@ export default function ChangeProfilePic({navigation}) {
             });
           }, 500);
         } else {
+          setIsLoading(false);
+
           Alert.alert('', `Image upload error`);
         }
       })
@@ -162,7 +150,7 @@ export default function ChangeProfilePic({navigation}) {
 
         <View style={{justifyContent: 'center', flex: 1}}>
           <TouchableOpacity
-            style={{width: 200, position: 'relative'}}
+            style={{alignSelf: 'center', marginBottom: 50}}
             onPress={() => pickImage()}>
             {/* {this.state.picUpload === true && (
               <View style={styles.picLoader}>
@@ -173,12 +161,12 @@ export default function ChangeProfilePic({navigation}) {
               source={image ? {uri: image} : userUrl}
               style={styles.profileImg}
             />
-            <MaterialCommunityIcons
+            {/* <MaterialCommunityIcons
               name="camera-plus-outline"
               size={36}
-              color="white"
+              color="black"
               style={styles.icon}
-            />
+            /> */}
           </TouchableOpacity>
           <View style={{marginHorizontal: 20, marginTop: 10}}>
             <Button
@@ -239,8 +227,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   profileImg: {
-    width: 200,
-    height: 200,
+    width: 300,
+    height: 300,
+    justifyContent: 'center',
     // borderRadius: 200
   },
   preloader: {
