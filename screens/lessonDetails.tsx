@@ -42,7 +42,7 @@ export default function LessonDetails({route, navigation}) {
       .then(res => {
         setIsLoading(false);
 
-        console.log('data = ', res.status);
+        // console.log('data = ', res.status);
         if (res.status === 200) {
           setVideos(res.data.videos);
           setHasVideos(true);

@@ -121,7 +121,7 @@ export default function Profile({route, navigation}) {
       )
       .then(response => response.json())
       .then(async res => {
-        console.log('Data = ', res);
+        // console.log('Data = ', res);
         setIsLoading(false);
 
         if (res.status === 200) {
@@ -171,7 +171,7 @@ export default function Profile({route, navigation}) {
       )
       .then(response => response.json())
       .then(async res => {
-        console.log('update = ', res);
+        // console.log('update = ', res);
         setIsLoading(false);
 
         if (res.status === 200) {
@@ -195,7 +195,7 @@ export default function Profile({route, navigation}) {
   };
 
   const checkLoginInStore = (data: any) => {
-    console.log('Data = ', data);
+    // console.log('Data = ', data);
     const emailId = data.email;
 
     http
@@ -205,7 +205,7 @@ export default function Profile({route, navigation}) {
       )
       .then(response => response.json())
       .then(async res => {
-        console.log('setLoginInDB = ', res);
+        // console.log('setLoginInDB = ', res);
 
         if (res.status === 200) {
           const jsonValue = JSON.stringify(data);

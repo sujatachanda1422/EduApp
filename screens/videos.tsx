@@ -31,7 +31,7 @@ export default function Videos({navigation, videoList}) {
   };
 
   // useEffect(() => {
-  //   console.log("Props == ", videoList);
+  //   // console.log("Props == ", videoList);
   // }, [videoList]);
 
   return (

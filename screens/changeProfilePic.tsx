@@ -95,9 +95,9 @@ export default function ChangeProfilePic({navigation}) {
 
     ImagePicker.showImagePicker(options, async response => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        // console.log('User cancelled image picker');
       } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
+        // console.log('ImagePicker Error: ', response.error);
       } else {
         // this.setState({ picUpload: true });
         try {
@@ -122,7 +122,7 @@ export default function ChangeProfilePic({navigation}) {
             setImageBlob(reader.result);
           };
         } catch (err) {
-          console.log('Img err ..........', err);
+          // console.log('Img err ..........', err);
         }
       }
     });

@@ -37,6 +37,12 @@ export default function Dashboard({navigation}) {
     BackHandler.exitApp();
   };
 
+  const getClassName = (classList, userDetails) => {
+    const item = classList.filter(item => item.name === userDetails.class);
+
+    return item[0].displayName;
+  };
+
   const getSubjectsList = async () => {
     setIsLoading(true);
 
@@ -72,17 +78,23 @@ export default function Dashboard({navigation}) {
       )
       .then(response => response.json())
       .then(async res => {
-        console.log('classes = ', res);
+        // console.log('classes = ', res);
         setIsLoading(false);
 
         if (res.length) {
           setClasses(res);
           await AsyncStorage.setItem('classList', JSON.stringify(res));
           getImageData(data.email);
+
+          const className = getClassName(res, data);
+          data.className = className;
+
+          setUser(data);
+          AsyncStorage.setItem('userData', JSON.stringify(data));
         }
       })
       .catch(error => {
-        console.log('classes error = ', error);
+        // console.log('classes error = ', error);
         setIsLoading(false);
         console.error(error);
       });
@@ -95,6 +107,7 @@ export default function Dashboard({navigation}) {
       screen: 'SubjectList',
       params: {
         className: item.name,
+        displayName: item.displayName,
       },
     });
   };
@@ -126,13 +139,13 @@ export default function Dashboard({navigation}) {
           );
           setUser(userData);
 
-          console.log('email   = ', email, userData);
+          // console.log('email   = ', email, userData);
 
           AsyncStorage.setItem('userData', JSON.stringify(userData));
         }
       })
       .catch(error => {
-        console.log('classes error = ', error);
+        // console.log('classes error = ', error);
         setIsLoading(false);
         console.error(error);
       });

@@ -25,7 +25,7 @@ export default function Worklist({navigation, workListData}) {
       ).then(granted => {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           //Once user grant the permission start downloading
-          console.log('Storage Permission Granted.');
+          // console.log('Storage Permission Granted.');
           downloadFile();
         } else {
           //If permission denied then show alert 'Storage Permission
@@ -35,7 +35,7 @@ export default function Worklist({navigation, workListData}) {
       });
     } catch (err) {
       //To handle permission related issue
-      console.log('error', err);
+      // console.log('error', err);
     }
   };
 
@@ -57,12 +57,12 @@ export default function Worklist({navigation, workListData}) {
     RNFetchBlob.config(options)
       .fetch('GET', pdf_url)
       .then(res => {
-        // console.log('res -> ', JSON.stringify(res));
+        // // console.log('res -> ', JSON.stringify(res));
         Alert.alert('Worksheet downloaded.');
       })
       .catch(err => {
         Alert.alert('Error.');
-        console.log('err -> ', err);
+        // console.log('err -> ', err);
       });
   };
 

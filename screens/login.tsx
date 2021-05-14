@@ -35,7 +35,7 @@ export default function Login({navigation}) {
   const [errorMsg, setErrorMsg] = useState('');
 
   const checkLoginInStore = (data: any) => {
-    console.log('Data = ', data);
+    // console.log('Data = ', data);
     const emailId = data.email;
 
     http
@@ -45,7 +45,7 @@ export default function Login({navigation}) {
       )
       .then(response => response.json())
       .then(res => {
-        console.log('setLoginInDB = ', res);
+        // console.log('setLoginInDB = ', res);
 
         if (res.status === 200) {
           setLoginInStore(data);
@@ -62,7 +62,7 @@ export default function Login({navigation}) {
   };
 
   const setLoginInStore = async data => {
-    console.log('setLoginInStore Data = ', data);
+    // console.log('setLoginInStore Data = ', data);
 
     const jsonValue = JSON.stringify(data);
     await AsyncStorage.setItem('userData', jsonValue);
@@ -73,7 +73,7 @@ export default function Login({navigation}) {
   };
 
   const setProfile = data => {
-    console.log('Social = ', data);
+    // console.log('Social = ', data);
 
     userLogin(true, data);
   };
@@ -89,9 +89,9 @@ export default function Login({navigation}) {
       {token, parameters: PROFILE_REQUEST_PARAMS},
       (error, result) => {
         if (error) {
-          console.log('login info has error: ' + error);
+          // console.log('login info has error: ' + error);
         } else {
-          console.log('result:', result);
+          // console.log('result:', result);
           setProfile(result);
         }
       },
@@ -107,7 +107,7 @@ export default function Login({navigation}) {
     ]).then(
       result => {
         if (result.isCancelled) {
-          console.log('Login cancelled');
+          // console.log('Login cancelled');
         } else {
           AccessToken.getCurrentAccessToken().then(data => {
             const accessToken = data.accessToken.toString();
@@ -116,7 +116,7 @@ export default function Login({navigation}) {
         }
       },
       error => {
-        console.log('Login fail with error: ', error);
+        // console.log('Login fail with error: ', error);
       },
     );
   };
@@ -128,9 +128,9 @@ export default function Login({navigation}) {
       setProfile(userInfo.user);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log('Login cancelled');
+        // console.log('Login cancelled');
       } else {
-        console.log('Login error = ', JSON.stringify(error));
+        // console.log('Login error = ', JSON.stringify(error));
       }
     }
   };
@@ -148,7 +148,7 @@ export default function Login({navigation}) {
 
     const emailId = isSocial ? data.email : email;
 
-    console.log('emailId = ', emailId);
+    // console.log('emailId = ', emailId);
 
     http
       .post(
@@ -157,7 +157,7 @@ export default function Login({navigation}) {
       )
       .then(response => response.json())
       .then(res => {
-        console.log('login = ', res);
+        // console.log('login = ', res);
 
         if (!isSocial) {
           if (res.status === 200) {

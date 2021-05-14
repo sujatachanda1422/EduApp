@@ -28,7 +28,6 @@ export default function SubjectList({navigation, route}) {
   useFocusEffect(
     useCallback(() => {
       getSubjectsList();
-
       if (user.role === 'student') {
         BackHandler.addEventListener('hardwareBackPress', handleBackButton);
 
@@ -68,17 +67,21 @@ export default function SubjectList({navigation, route}) {
       )
       .then(response => response.json())
       .then(res => {
-        console.log('classes = ', res);
+        // console.log('classes = ', res);
 
         if (res.subjects) {
           setIsLoading(false);
           setSubjects(res.subjects);
           AsyncStorage.setItem('subjects', JSON.stringify(res.subjects));
           getImageData(data.email);
+
+          data.className = res.displayName;
+          setUser(data);
+          AsyncStorage.setItem('userData', JSON.stringify(data));
         }
       })
       .catch(error => {
-        console.log('classes error = ', error);
+        // console.log('classes error = ', error);
         setIsLoading(false);
         console.error(error);
       });
@@ -100,13 +103,13 @@ export default function SubjectList({navigation, route}) {
           );
           setUser(userData);
 
-          console.log('email   = ', email, userData);
+          // console.log('email   = ', email, userData);
 
           AsyncStorage.setItem('userData', JSON.stringify(userData));
         }
       })
       .catch(error => {
-        console.log('classes error = ', error);
+        // console.log('classes error = ', error);
         setIsLoading(false);
         console.error(error);
       });
@@ -168,13 +171,13 @@ export default function SubjectList({navigation, route}) {
               style={styles.userImg}></Image>
           </TouchableOpacity>
           <Text style={styles.userName}>{user.name}</Text>
-          <Text style={styles.class}>{className}</Text>
+          <Text style={styles.class}>{user.className}</Text>
         </View>
       )}
 
       {user.role === 'teacher' && (
         <View>
-          <Text style={styles.classNameStyle}>{className}</Text>
+          <Text style={styles.classNameStyle}>{user.className}</Text>
         </View>
       )}
 
@@ -227,7 +230,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: 6,
     backgroundColor: '#fff',
-    maxWidth: '45%'
+    maxWidth: '45%',
   },
   listIcon: {
     width: 70,
@@ -241,7 +244,7 @@ const styles = StyleSheet.create({
   listIconWrapper: {
     backgroundColor: '#fff',
     marginBottom: 15,
-    
+
     // alignItems: 'center',
     // justifyContent: 'center',
   },

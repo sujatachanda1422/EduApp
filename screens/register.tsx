@@ -139,7 +139,7 @@ export default function Register({navigation}) {
       )
       .then(response => response.json())
       .then(async res => {
-        console.log('Data = ', res);
+        // console.log('Data = ', res);
         setIsLoading(false);
 
         if (res.status === 200) {
