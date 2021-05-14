@@ -13,6 +13,7 @@ export default function LessonDetails({route, navigation}) {
   const [videos, setVideos] = useState([]);
   const [workList, setWorkList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasVideos, setHasVideos] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
@@ -26,7 +27,7 @@ export default function LessonDetails({route, navigation}) {
     });
 
     getVideoList();
-    getWorkList();
+    // getWorkList();
   }, []);
 
   const getVideoList = () => {
@@ -39,13 +40,17 @@ export default function LessonDetails({route, navigation}) {
       )
       .then(response => response.json())
       .then(res => {
-        console.log("data = ", res);
-        if (res.videos) {
-          setVideos(res.videos);
-          setIsLoading(false);
+        setIsLoading(false);
+
+        console.log('data = ', res.status);
+        if (res.status === 200) {
+          setVideos(res.data.videos);
+          setHasVideos(true);
+        } else if (res.status === 404 || res.status === 500) {
         }
       })
       .catch(error => {
+        setIsLoading(false);
         console.error(error);
       });
   };
@@ -75,7 +80,10 @@ export default function LessonDetails({route, navigation}) {
         </View>
       )}
 
-      <Tab.Navigator
+      {!isLoading && hasVideos && <Videos navigation={navigation} videoList={videos} />}
+      {!isLoading && !hasVideos && <Text style={styles.textStyle}>COMING SOON...</Text>}
+
+      {/* <Tab.Navigator
         tabBarOptions={{
           style: {height: 60},
           tabStyle: {padding: 8},
@@ -106,7 +114,7 @@ export default function LessonDetails({route, navigation}) {
             ),
           }}
         />
-      </Tab.Navigator>
+      </Tab.Navigator> */}
     </View>
   );
 }
@@ -129,4 +137,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000007',
     zIndex: 1,
   },
+  textStyle: {
+    fontSize: 40,
+    alignSelf: 'center',
+    color: 'blue'
+  }
 });

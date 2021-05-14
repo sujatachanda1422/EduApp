@@ -125,7 +125,13 @@ export default function Profile({route, navigation}) {
         setIsLoading(false);
 
         if (res.status === 200) {
-          checkLoginInStore(res.user);
+          const data = res.user;
+          const jsonValue = JSON.stringify(data);
+          await AsyncStorage.setItem('userData', jsonValue);
+
+          navigation.navigate('HomeComp', {
+            screen: 'Dashboard',
+          });
         } else if (res.status === 500) {
           Alert.alert('', `Update error`);
         }

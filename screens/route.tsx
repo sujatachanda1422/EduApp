@@ -51,8 +51,13 @@ function HomeComp() {
           screenOptions={{
             headerTintColor: '#fff',
             headerTitleAlign: 'center',
+            headerTitleAllowFontScaling: true,
             headerTitleStyle: {
               color: '#fff',
+            },
+            headerTitleContainerStyle: {
+              alignItems: 'center',
+              width: '70%'
             },
             headerStyle: {
               backgroundColor: '#2dadb3',
@@ -167,7 +172,8 @@ function HomeComp() {
 export default function App() {
   return (
     <NavigationContainer>
-      <Drawer.Navigator initialRouteName="HomeComp" 
+      <Drawer.Navigator
+        initialRouteName="HomeComp"
         drawerContent={props => <MenuItems {...props} />}>
         <Drawer.Screen name="HomeComp" component={HomeComp} />
       </Drawer.Navigator>

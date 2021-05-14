@@ -223,16 +223,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 25,
     marginHorizontal: 10,
     borderRadius: 6,
     backgroundColor: '#fff',
+    maxWidth: '45%'
   },
   listIcon: {
     width: 70,
     height: 70,
     marginBottom: 15,
-    resizeMode: 'contain',
+    // resizeMode: 'contain',
   },
   itemText: {
     fontSize: 18,
@@ -240,11 +241,14 @@ const styles = StyleSheet.create({
   listIconWrapper: {
     backgroundColor: '#fff',
     marginBottom: 15,
+    
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
   shadowImg: {
     position: 'absolute',
     left: -20,
-    width: 100,
+    width: 106,
     height: 100,
   },
   userShadow: {

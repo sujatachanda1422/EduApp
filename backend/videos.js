@@ -17,16 +17,26 @@ module.exports.videoList = (event, context, callback) => {
     dynamoDb.get(params).promise()
         .then(result => {
             console.log("Logged in data", result);
-            let response;
+            let response, data = JSON.stringify(result, null, 2);
 
-            response = {
-                body: JSON.stringify(result.Item)
-            };
+            if (data !== "{}") {
+                response = {
+                    body: JSON.stringify({ status: 200, data: result.Item })
+                };
+            } else {
+                response = {
+                    body: JSON.stringify({ status: 404, message: 'No user found' })
+                };
+            }
+
             callback(null, response);
         })
         .catch(error => {
             console.error("Error in data", params);
-            callback(null);
+            const response = {
+                body: JSON.stringify({ status: 500, message: 'Login error' })
+            };
+            callback(null, response);
             return;
         });
 }

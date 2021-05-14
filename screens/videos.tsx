@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 const video = require('../images/video.png');
+const activity = require('../images/activity.jpg');
 
 export default function Videos({navigation, videoList}) {
   const onSubjectClick = item => {
@@ -47,12 +48,20 @@ export default function Videos({navigation, videoList}) {
                   activeOpacity={0.9}
                   style={styles.item}
                   onPress={() => onSubjectClick(item)}>
-                  <Image source={video} style={styles.videoImg}></Image>
+                  {item.type === 'video' && (
+                    <Image source={video} style={styles.videoImg}></Image>
+                  )}
+                  {item.type === 'activity' && (
+                    <Image source={activity} style={styles.activityImg}></Image>
+                  )}
                   <Text style={styles.itemText}>{item.name}</Text>
                 </TouchableOpacity>
               );
             }}
           />
+        )}
+        {!videoList && (
+          <Text>No videos found.</Text>
         )}
       </View>
     </View>
@@ -76,7 +85,7 @@ const styles = StyleSheet.create({
   item: {
     height: 80,
     padding: 15,
-    marginBottom: 5,
+    marginBottom: 15,
     flexDirection: 'row',
     backgroundColor: '#fff',
     elevation: 3,
@@ -88,6 +97,12 @@ const styles = StyleSheet.create({
     width: 80,
     height: 50,
     marginRight: 15,
+  },
+  activityImg: {
+    width: 80,
+    height: 70,
+    marginRight: 15,
+    resizeMode: 'contain',
   },
   itemText: {
     fontSize: 20,

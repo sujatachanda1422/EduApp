@@ -50,6 +50,13 @@ export default function MenuItems({navigation}) {
 
   const deleteLoginHistory = async () => {
     const data = JSON.parse(await AsyncStorage.getItem('userData'));
+    AsyncStorage.clear();
+
+    navigation.navigate('HomeComp', {
+      screen: 'Login',
+    });
+
+    return;
 
     http
       .delete(

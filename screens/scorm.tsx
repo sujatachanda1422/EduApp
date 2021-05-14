@@ -25,8 +25,7 @@ export default function Scorm({navigation, route}) {
         <WebView
           originWhitelist={['*']}
           source={{
-            uri:
-              'https://issschool-scorm.s3.amazonaws.com/AlphabetWriting/story_html5.html',
+            uri: videoDetails.link,
           }}
           style={{flex: 1.0}}
           javaScriptEnabled={true}

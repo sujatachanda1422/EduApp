@@ -7,3 +7,4 @@ export const activities = require('../images/activities.png');
 export const writing = require('../images/writing.png');
 export const reading = require('../images/reading.png');
 export const stories = require('../images/stories.png');
+export const puzzles = require('../images/writing.png');

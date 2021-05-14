@@ -166,7 +166,7 @@ export default function Login({navigation}) {
             let pwdDecrypt = bytes.toString(CryptoJS.enc.Utf8);
 
             if (pwdDecrypt === pwd) {
-              checkLoginInStore(res.data);
+              setLoginInStore(res.data);
             } else {
               setErrorMsg('Wrong password');
             }
@@ -175,7 +175,7 @@ export default function Login({navigation}) {
           }
         } else {
           if (res.status === 200) {
-            checkLoginInStore(res.data);
+            setLoginInStore(res.data);
           } else {
             navigation.navigate('HomeComp', {
               screen: 'Profile',
