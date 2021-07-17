@@ -1,5 +1,10 @@
 package com.issschool;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Arrays;
 import com.facebook.react.shell.MainReactPackage;
@@ -14,8 +19,21 @@ import com.imagepicker.ImagePickerPackage;
 public class MainActivity extends ReactActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+                
+     try {
+         PackageInfo info = getPackageManager().getPackageInfo("com.issschool", PackageManager.GET_SIGNATURES);
+         for (Signature signature : info.signatures) {
+             MessageDigest md = MessageDigest.getInstance("SHA");
+             md.update(signature.toByteArray());
+             }
+          } catch (PackageManager.NameNotFoundException e) {
+                  
+          } catch (NoSuchAlgorithmException e) {
+                  
+          }
+
     SplashScreen.show(this, R.style.SplashTheme);
-      super.onCreate(savedInstanceState);
   }
 
   /**

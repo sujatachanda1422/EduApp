@@ -103,7 +103,6 @@ export default function Login({navigation}) {
     LoginManager.logInWithPermissions([
       'public_profile',
       'email',
-      'user_friends',
     ]).then(
       result => {
         if (result.isCancelled) {
